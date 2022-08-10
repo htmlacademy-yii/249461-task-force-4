@@ -1,7 +1,7 @@
 # Личный проект «TaskForce»
 
 * Студент: [Сергей Кравцов](https://up.htmlacademy.ru/yii/4/user/249461).
-* Наставник: `Неизвестно`.
+* Наставник: [Сергей Парфенов](https://htmlacademy.ru/profile/id926645).
 
 ---
 
