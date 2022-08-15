@@ -23,7 +23,7 @@ class Task
     /**
      * Список названий доступных статусов
      */
-    private $mapStatus = [
+    const MAP_STATUS = [
         self::STATUS_NEW => 'Новое',
         self::STATUS_CANCELED => 'Отменено',
         self::STATUS_COMPLETED => 'Выполнено',
@@ -34,7 +34,7 @@ class Task
     /**
      * Список названий доступных действий
      */
-    private $mapAction = [
+    const MAP_ACTION = [
         self::ACTION_CANCEL => 'Отменить',
         self::ACTION_COMPLETED => 'Выполнено',
         self::ACTION_RESPOND => 'Откликнуться',
@@ -49,36 +49,37 @@ class Task
     /**
      * ID заказчика и исполнителя
      */
-    private $idExecutor;
-    private $idClient;
+    private $executorId;
+    private $clientId;
+
 
     /**
      * Конструктор принимает id заказчика и исполнителя
-     * @param int $idExecutor
-     * @param int $idClient
+     * @param int $clientId
+     * @param int|null $executorId
      */
-    public function __construct(int $idExecutor, int $idClient)
+    public function __construct(int $clientId, int $executorId = null)
     {
-        $this->idExecutor = $idExecutor;
-        $this->idClient = $idClient;
+        $this->executorId = $executorId;
+        $this->clientId = $clientId;
     }
 
 
     /**
      * @return int ID исполнителя
      */
-    public function getIdExecutor()
+    public function getExecutorId()
     {
-        return $this->idExecutor;
+        return $this->executorId;
     }
 
 
     /**
      * @return int ID клиента
      */
-    public function getIdClient()
+    public function getClientId()
     {
-        return $this->idClient;
+        return $this->clientId;
     }
 
     /**
@@ -86,7 +87,7 @@ class Task
      */
     public function getMapStatus()
     {
-        return $this->mapStatus;
+        return self::MAP_STATUS;
     }
 
 
@@ -96,10 +97,14 @@ class Task
      */
     public function getMapAction($action)
     {
-        return $this->mapAction[$action];
+        if (!array_key_exists($action, self::MAP_ACTION)) {
+            return 'Действие не существет';
+        }
+        return self::MAP_ACTION[$action];
     }
 
     /**
+     * Метод для получения статуса, в которой он перейдёт после выполнения указанного действия
      * @param $action string Действие с заданием
      * @return mixed|string Статус задания
      */
@@ -120,20 +125,21 @@ class Task
     }
 
     /**
+     * Метод для получения доступных действий для указанного статуса
      * @param $currentStatus string Текущий статус задания
      * @param $id int Идентификатор пользователя
      * @return int|string|void Доступное действие с заданием, если оно доступно
      */
     public function getAvailableAction(string $currentStatus, int $id)
     {
-        if ($id === self::getIdExecutor()) {
+        if ($id === self::getExecutorId()) {
             switch ($currentStatus) {
                 case self::STATUS_NEW:
                     return self::ACTION_RESPOND;
                 case self::STATUS_PROGRESS:
                     return self::ACTION_REFUSE;
             }
-        } elseif ($id === self::getIdClient()) {
+        } elseif ($id === self::getClientId()) {
             switch ($currentStatus) {
                 case self::STATUS_NEW:
                     return self::ACTION_CANCEL;
@@ -143,5 +149,14 @@ class Task
         } else {
             return print('Действие или пользователь не определены');
         }
+    }
+
+    public function startTask(int $executorId) {
+        if ($executorId === $this->clientId) {
+            return print('Заказчик не может быть исполнителем');
+        }
+
+        $this->executorId = $executorId;
+        $this->currentStatus = self::STATUS_PROGRESS;
     }
 }
