@@ -14,8 +14,9 @@ class Task
     /**
      * Константы доступных действий
      */
+    const ACTION_START = 'start';           // начать
     const ACTION_CANCEL = 'cancel';         // отменить
-    const ACTION_COMPLETED = 'completed';   // выполнена
+    const ACTION_COMPLETE = 'complete';     // выполнена
     const ACTION_RESPOND = 'respond';       // откликнутся
     const ACTION_REFUSE = 'refuse';         // отказаться
 
@@ -35,8 +36,9 @@ class Task
      * Список названий доступных действий
      */
     const MAP_ACTION = [
+        self::ACTION_START => 'Принять',
         self::ACTION_CANCEL => 'Отменить',
-        self::ACTION_COMPLETED => 'Выполнено',
+        self::ACTION_COMPLETE => 'Выполнено',
         self::ACTION_RESPOND => 'Откликнуться',
         self::ACTION_REFUSE => 'Отказаться',
     ];
@@ -44,7 +46,7 @@ class Task
     /**
      * Текущий статус задачи
      */
-    public $currentStatus = self::STATUS_NEW;
+    public $status;
 
     /**
      * ID заказчика и исполнителя
@@ -62,6 +64,7 @@ class Task
     {
         $this->executorId = $executorId;
         $this->clientId = $clientId;
+        $this->status = self::STATUS_NEW;
     }
 
 
@@ -106,17 +109,19 @@ class Task
     /**
      * Метод для получения статуса, в которой он перейдёт после выполнения указанного действия
      * @param $action string Действие с заданием
-     * @return mixed|string Статус задания
+     * @return string Статус задания
      */
     public function getNextStatus(string $action)
     {
         switch ($action) {
+            case self::ACTION_START:
+                return self::STATUS_PROGRESS;
             case self::ACTION_CANCEL:
                 return self::STATUS_CANCELED;
-            case self::ACTION_COMPLETED:
+            case self::ACTION_COMPLETE:
                 return self::STATUS_COMPLETED;
             case self::ACTION_RESPOND:
-                return self::STATUS_PROGRESS;
+                return self::STATUS_NEW;
             case self::ACTION_REFUSE:
                 return self::STATUS_FAILED;
             default:
@@ -126,29 +131,35 @@ class Task
 
     /**
      * Метод для получения доступных действий для указанного статуса
-     * @param $currentStatus string Текущий статус задания
+     * @param $status string Текущий статус задания
      * @param $id int Идентификатор пользователя
-     * @return int|string|void Доступное действие с заданием, если оно доступно
+     * @return array Доступное действие с заданием, если оно доступно
      */
-    public function getAvailableAction(string $currentStatus, int $id)
+    public function getAvailableActions(string $status, int $id)
     {
+        $actions = [];
+
         if ($id === self::getExecutorId()) {
-            switch ($currentStatus) {
+            switch ($status) {
                 case self::STATUS_NEW:
-                    return self::ACTION_RESPOND;
+                    $actions = [self::ACTION_RESPOND];
+                    break;
                 case self::STATUS_PROGRESS:
-                    return self::ACTION_REFUSE;
+                    $actions = [self::ACTION_REFUSE];
+                    break;
             }
         } elseif ($id === self::getClientId()) {
-            switch ($currentStatus) {
+            switch ($status) {
                 case self::STATUS_NEW:
-                    return self::ACTION_CANCEL;
+                    $actions = [self::ACTION_CANCEL, self::ACTION_START];
+                    break;
                 case self::STATUS_PROGRESS:
-                    return self::ACTION_COMPLETED;
+                    $actions = [self::ACTION_COMPLETE];
+                    break;
             }
-        } else {
-            return print('Действие или пользователь не определены');
         }
+
+        return $actions;
     }
 
     public function startTask(int $executorId) {
