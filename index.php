@@ -15,7 +15,7 @@ assert($newTask->getNextStatus('complete') === Task::STATUS_COMPLETED, 'complete
 assert($newTask->getNextStatus('respond') === Task::STATUS_NEW, 'respond action');
 assert($newTask->getNextStatus('refuse') === Task::STATUS_FAILED, 'refuse action');
 
-assert($newTask->getAvailableActions('new', $executor)[0] === Task::ACTION_RESPOND, 'progress status');
+assert($newTask->getAvailableActions('new', null)[0] === Task::ACTION_RESPOND, 'progress status');
 assert($newTask->getAvailableActions('progress', $executor)[0] === Task::ACTION_REFUSE, 'refuse status');
 assert($newTask->getAvailableActions('progress', $client)[0] === Task::ACTION_COMPLETE, 'complete status');
 assert($newTask->getAvailableActions('new', $client) === [Task::ACTION_CANCEL, Task::ACTION_START], 'respond status');

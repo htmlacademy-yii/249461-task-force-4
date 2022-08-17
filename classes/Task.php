@@ -59,12 +59,13 @@ class Task
      * Конструктор принимает id заказчика и исполнителя
      * @param int $clientId
      * @param int|null $executorId
+     * @param string $status
      */
-    public function __construct(int $clientId, int $executorId = null)
+    public function __construct(int $clientId, int $executorId = null, string $status = 'new')
     {
         $this->executorId = $executorId;
         $this->clientId = $clientId;
-        $this->status = self::STATUS_NEW;
+        $this->status = $status;
     }
 
 
@@ -131,24 +132,19 @@ class Task
 
     /**
      * Метод для получения доступных действий для указанного статуса
-     * @param $status string Текущий статус задания
-     * @param $id int Идентификатор пользователя
+     * @param string $status  Текущий статус задания
+     * @param int|null $currentUserId Идентификатор пользователя
      * @return array Доступное действие с заданием, если оно доступно
      */
-    public function getAvailableActions(string $status, int $id)
+    public function getAvailableActions(string $status, int|null $currentUserId)
     {
         $actions = [];
 
-        if ($id === self::getExecutorId()) {
-            switch ($status) {
-                case self::STATUS_NEW:
-                    $actions = [self::ACTION_RESPOND];
-                    break;
-                case self::STATUS_PROGRESS:
-                    $actions = [self::ACTION_REFUSE];
-                    break;
-            }
-        } elseif ($id === self::getClientId()) {
+        if ($currentUserId !== $this->getClientId() && $this->getExecutorId() === null && $status === self::STATUS_NEW) {
+            $actions = [self::ACTION_RESPOND];
+        } elseif ($currentUserId === $this->getExecutorId() && $status === self::STATUS_PROGRESS) {
+            $actions = [self::ACTION_REFUSE];
+        } elseif ($currentUserId === $this->getClientId()) {
             switch ($status) {
                 case self::STATUS_NEW:
                     $actions = [self::ACTION_CANCEL, self::ACTION_START];
@@ -168,6 +164,6 @@ class Task
         }
 
         $this->executorId = $executorId;
-        $this->currentStatus = self::STATUS_PROGRESS;
+        $this->status = self::STATUS_PROGRESS;
     }
 }
