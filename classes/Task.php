@@ -57,15 +57,15 @@ class Task
 
     /**
      * Конструктор принимает id заказчика и исполнителя
+     * @param string $status
      * @param int $clientId
      * @param int|null $executorId
-     * @param string $status
      */
-    public function __construct(int $clientId, int $executorId = null, string $status = 'new')
+    public function __construct(string $status, int $clientId, int $executorId = 0)
     {
-        $this->executorId = $executorId;
         $this->clientId = $clientId;
         $this->status = $status;
+        $this->executorId = $executorId;
     }
 
 
@@ -126,39 +126,44 @@ class Task
             case self::ACTION_REFUSE:
                 return self::STATUS_FAILED;
             default:
-                return $this->currentStatus;
+                return $this->status;
         }
     }
 
     /**
      * Метод для получения доступных действий для указанного статуса
-     * @param string $status  Текущий статус задания
-     * @param int|null $currentUserId Идентификатор пользователя
+     * @param string $status Текущий статус задания
+     * @param int $currentUserId Идентификатор пользователя
      * @return array Доступное действие с заданием, если оно доступно
      */
-    public function getAvailableActions(string $status, int|null $currentUserId)
+    public function getAvailableActions(string $status, int $currentUserId)
     {
         $actions = [];
 
-        if ($currentUserId !== $this->getClientId() && $this->getExecutorId() === null && $status === self::STATUS_NEW) {
-            $actions = [self::ACTION_RESPOND];
-        } elseif ($currentUserId === $this->getExecutorId() && $status === self::STATUS_PROGRESS) {
-            $actions = [self::ACTION_REFUSE];
-        } elseif ($currentUserId === $this->getClientId()) {
-            switch ($status) {
-                case self::STATUS_NEW:
+        switch ($status) {
+            case self::STATUS_NEW:
+                if ($currentUserId === $this->getClientId()) {
                     $actions = [self::ACTION_CANCEL, self::ACTION_START];
-                    break;
-                case self::STATUS_PROGRESS:
+                }
+                if ($currentUserId !== $this->getClientId() && $this->getExecutorId() === 0) {
+                    $actions = [self::ACTION_RESPOND];
+                }
+                break;
+            case self::STATUS_PROGRESS:
+                if ($currentUserId === $this->getExecutorId()) {
+                    $actions = [self::ACTION_REFUSE];
+                }
+                if ($currentUserId === $this->getClientId()) {
                     $actions = [self::ACTION_COMPLETE];
-                    break;
-            }
+                }
+                break;
         }
 
         return $actions;
     }
 
-    public function startTask(int $executorId) {
+    public function startTask(int $executorId)
+    {
         if ($executorId === $this->clientId) {
             return print('Заказчик не может быть исполнителем');
         }

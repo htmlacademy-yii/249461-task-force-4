@@ -5,9 +5,10 @@ spl_autoload_register();
 
 $client = 222;
 $executor = 111;
-$request_executor = null;
+$request_executor = 0;
+$default_task_status = 'new';
 
-$newTask = new Task($client);
+$newTask = new Task($default_task_status, $client);
 
 assert($newTask->getNextStatus('cancel') === Task::STATUS_CANCELED, 'cancel action');
 assert($newTask->getNextStatus('complete') === Task::STATUS_COMPLETED, 'complete action');
