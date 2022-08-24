@@ -5,7 +5,7 @@ spl_autoload_register();
 
 $client = 222;
 $executor = 111;
-$request_executor = 0;
+$request_executor = null;
 $default_task_status = 'new';
 
 $newTask = new Task($default_task_status, $client);

@@ -61,7 +61,7 @@ class Task
      * @param int $clientId
      * @param int|null $executorId
      */
-    public function __construct(string $status, int $clientId, int $executorId = 0)
+    public function __construct(string $status, int $clientId, ?int $executorId = null)
     {
         $this->clientId = $clientId;
         $this->status = $status;
@@ -133,20 +133,19 @@ class Task
     /**
      * Метод для получения доступных действий для указанного статуса
      * @param string $status Текущий статус задания
-     * @param int $currentUserId Идентификатор пользователя
+     * @param ?int $currentUserId Идентификатор пользователя
      * @return array Доступное действие с заданием, если оно доступно
      */
-    public function getAvailableActions(string $status, int $currentUserId)
+    public function getAvailableActions(string $status, ?int $currentUserId)
     {
         $actions = [];
 
         switch ($status) {
             case self::STATUS_NEW:
+                $actions = [self::ACTION_RESPOND];
+
                 if ($currentUserId === $this->getClientId()) {
                     $actions = [self::ACTION_CANCEL, self::ACTION_START];
-                }
-                if ($currentUserId !== $this->getClientId() && $this->getExecutorId() === 0) {
-                    $actions = [self::ACTION_RESPOND];
                 }
                 break;
             case self::STATUS_PROGRESS:
