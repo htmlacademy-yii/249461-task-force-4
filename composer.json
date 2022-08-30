@@ -2,7 +2,7 @@
     "name": "skrav/task-force",
     "autoload": {
         "psr-4": {
-            "TaskForce\\": "classes/"
+            "TaskForce\\": "src/"
         }
     },
     "authors": [

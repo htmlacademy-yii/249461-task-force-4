@@ -2,7 +2,7 @@
 
 require_once "vendor/autoload.php";
 
-use TaskForce\Task;
+use TaskForce\classes\Task;
 
 $client = 222;
 $executor = 111;
