@@ -1,7 +1,8 @@
 <?php
 
-set_include_path('classes');
-spl_autoload_register();
+require_once "vendor/autoload.php";
+
+use TaskForce\classes\Task;
 
 $client = 222;
 $executor = 111;

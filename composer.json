@@ -1,0 +1,15 @@
+{
+    "name": "skrav/task-force",
+    "autoload": {
+        "psr-4": {
+            "TaskForce\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "skravtsov",
+            "email": "s.kravtsov@hotmail.com"
+        }
+    ],
+    "require": {}
+}
