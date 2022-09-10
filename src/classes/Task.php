@@ -2,6 +2,12 @@
 
 namespace TaskForce\classes;
 
+use TaskForce\classes\actions\ActionCancel;
+use TaskForce\classes\actions\ActionComplete;
+use TaskForce\classes\actions\ActionRefuse;
+use TaskForce\classes\actions\ActionRespond;
+use TaskForce\classes\actions\ActionStart;
+
 class Task
 {
     /**
@@ -57,6 +63,13 @@ class Task
     private $clientId;
 
 
+    public $actionCancel;
+    public $actionComplete;
+    public $actionRespond;
+    public $actionRefuse;
+    public $actionStart;
+
+
     /**
      * Конструктор принимает id заказчика и исполнителя
      * @param string $status
@@ -68,6 +81,12 @@ class Task
         $this->clientId = $clientId;
         $this->status = $status;
         $this->executorId = $executorId;
+
+        $this->actionCancel = new ActionCancel();
+        $this->actionComplete = new ActionComplete();
+        $this->actionRespond = new ActionRespond();
+        $this->actionRefuse = new ActionRefuse();
+        $this->actionStart = new ActionStart();
     }
 
 
@@ -117,15 +136,15 @@ class Task
     public function getNextStatus(string $action)
     {
         switch ($action) {
-            case self::ACTION_START:
+            case $this->actionStart->getActionSystemName():
                 return self::STATUS_PROGRESS;
-            case self::ACTION_CANCEL:
+            case $this->actionCancel->getActionSystemName():
                 return self::STATUS_CANCELED;
-            case self::ACTION_COMPLETE:
+            case $this->actionComplete->getActionSystemName():
                 return self::STATUS_COMPLETED;
-            case self::ACTION_RESPOND:
+            case $this->actionRespond->getActionSystemName():
                 return self::STATUS_NEW;
-            case self::ACTION_REFUSE:
+            case $this->actionRefuse->getActionSystemName():
                 return self::STATUS_FAILED;
             default:
                 return $this->status;
@@ -144,18 +163,18 @@ class Task
 
         switch ($status) {
             case self::STATUS_NEW:
-                $actions = [self::ACTION_RESPOND];
+                $actions = [$this->actionRespond->getActionSystemName()];
 
-                if ($currentUserId === $this->getClientId()) {
-                    $actions = [self::ACTION_CANCEL, self::ACTION_START];
+                if ($this->actionCancel->userRoleCheck($currentUserId, $this->clientId, $this->executorId)) {
+                    $actions = [$this->actionCancel->getActionSystemName(), $this->actionStart->getActionSystemName()];
                 }
                 break;
             case self::STATUS_PROGRESS:
-                if ($currentUserId === $this->getExecutorId()) {
-                    $actions = [self::ACTION_REFUSE];
+                if ($this->actionRefuse->userRoleCheck($currentUserId, $this->clientId, $this->executorId)) {
+                    $actions = [$this->actionRefuse->getActionSystemName()];
                 }
-                if ($currentUserId === $this->getClientId()) {
-                    $actions = [self::ACTION_COMPLETE];
+                if ($this->actionComplete->userRoleCheck($currentUserId, $this->clientId, $this->executorId)) {
+                    $actions = [$this->actionComplete->getActionSystemName()];
                 }
                 break;
         }
