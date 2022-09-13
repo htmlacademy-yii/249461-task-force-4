@@ -1,22 +1,36 @@
 <?php
 
 namespace TaskForce\classes\actions;
+use TaskForce\classes\Task;
 
+/**
+ *
+ */
 abstract class AbstractAction
 {
+    protected $actionName;
+    protected $actionSystemName;
 
     /**
      * Возвращает название
      */
-    abstract function getActionName();
+    function getActionName() {
+        return $this->actionName;
+    }
 
     /**
      * Возвращает внутреннее название
      */
-    abstract function getActionSystemName();
+    function getActionSystemName() {
+        return $this->actionSystemName;
+    }
+
 
     /**
-     * Проверяет права пользователя для текущего действия
+     *
+     * @param Task $task
+     * @param int|null $currentUser
+     * @return mixed
      */
-    abstract function userRoleCheck($currentUser, $clientId, $executorId);
+    abstract function checkAvailable(Task $task, ?int $currentUser) :bool;
 }

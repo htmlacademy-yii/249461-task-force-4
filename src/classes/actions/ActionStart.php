@@ -1,31 +1,19 @@
 <?php
 
 namespace TaskForce\classes\actions;
+use TaskForce\classes\Task;
 
 class ActionStart extends AbstractAction
 {
 
-    /**
-     * @inheritDoc
-     */
-    function getActionName()
-    {
-        return 'Принять';
-    }
+    protected $actionName = 'Принять';
+    protected $actionSystemName = 'start';
 
     /**
      * @inheritDoc
      */
-    function getActionSystemName()
+    function checkAvailable(Task $task, ?int $currentUser) :bool
     {
-        return 'start';
-    }
-
-    /**
-     * @inheritDoc
-     */
-    function userRoleCheck($currentUser, $clientId, $executorId)
-    {
-        return $currentUser === $clientId;
+        return $currentUser === $task->getClientId() && $task->status === 'new';
     }
 }

@@ -1,31 +1,19 @@
 <?php
 
 namespace TaskForce\classes\actions;
+use TaskForce\classes\Task;
 
 class ActionComplete extends AbstractAction
 {
 
-    /**
-     * @inheritDoc
-     */
-    function getActionName()
-    {
-        return 'Выполнено';
-    }
+    protected $actionName = 'Выполнено';
+    protected $actionSystemName = 'complete';
 
     /**
      * @inheritDoc
      */
-    function getActionSystemName()
+    function checkAvailable(Task $task, ?int $currentUser) :bool
     {
-        return 'complete';
-    }
-
-    /**
-     * @inheritDoc
-     */
-    function userRoleCheck($currentUser, $clientId, $executorId)
-    {
-        return $currentUser === $clientId;
+        return $currentUser === $task->getClientId() && $task->status === 'progress';
     }
 }

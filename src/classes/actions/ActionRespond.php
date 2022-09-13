@@ -1,31 +1,19 @@
 <?php
 
 namespace TaskForce\classes\actions;
+use TaskForce\classes\Task;
 
 class ActionRespond extends AbstractAction
 {
 
-    /**
-     * @inheritDoc
-     */
-    function getActionName()
-    {
-        return 'Откликнуться';
-    }
+    protected $actionName = 'Откликнуться';
+    protected $actionSystemName = 'respond';
 
     /**
      * @inheritDoc
      */
-    function getActionSystemName()
+    function checkAvailable(Task $task, ?int $currentUser) :bool
     {
-        return 'respond';
-    }
-
-    /**
-     * @inheritDoc
-     */
-    function userRoleCheck($currentUser, $clientId, $executorId)
-    {
-        return $currentUser !== $clientId && $executorId !== null;
+        return $currentUser !== $task->getClientId() && $task->getExecutorId() === null && $task->status === 'new';
     }
 }

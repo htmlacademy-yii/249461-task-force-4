@@ -153,30 +153,27 @@ class Task
 
     /**
      * Метод для получения доступных действий для указанного статуса
-     * @param string $status Текущий статус задания
      * @param ?int $currentUserId Идентификатор пользователя
      * @return array Доступное действие с заданием, если оно доступно
      */
-    public function getAvailableActions(string $status, ?int $currentUserId)
+    public function getAvailableActions(?int $currentUserId) :array
     {
         $actions = [];
 
-        switch ($status) {
-            case self::STATUS_NEW:
-                $actions = [$this->actionRespond->getActionSystemName()];
-
-                if ($this->actionCancel->userRoleCheck($currentUserId, $this->clientId, $this->executorId)) {
-                    $actions = [$this->actionCancel->getActionSystemName(), $this->actionStart->getActionSystemName()];
-                }
-                break;
-            case self::STATUS_PROGRESS:
-                if ($this->actionRefuse->userRoleCheck($currentUserId, $this->clientId, $this->executorId)) {
-                    $actions = [$this->actionRefuse->getActionSystemName()];
-                }
-                if ($this->actionComplete->userRoleCheck($currentUserId, $this->clientId, $this->executorId)) {
-                    $actions = [$this->actionComplete->getActionSystemName()];
-                }
-                break;
+        if ($this->actionCancel->checkAvailable($this, $currentUserId)) {
+            $actions[] = $this->actionCancel;
+        }
+        if ($this->actionComplete->checkAvailable($this, $currentUserId)) {
+            $actions[] = $this->actionComplete;
+        }
+        if ($this->actionRespond->checkAvailable($this, $currentUserId)) {
+            $actions[] = $this->actionRespond;
+        }
+        if ($this->actionRefuse->checkAvailable($this, $currentUserId)) {
+            $actions[] = $this->actionRefuse;
+        }
+        if ($this->actionStart->checkAvailable($this, $currentUserId)) {
+            $actions[] = $this->actionStart;
         }
 
         return $actions;

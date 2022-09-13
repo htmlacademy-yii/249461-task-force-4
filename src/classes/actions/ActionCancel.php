@@ -1,30 +1,19 @@
 <?php
 
 namespace TaskForce\classes\actions;
+use TaskForce\classes\Task;
 
 class ActionCancel extends AbstractAction
 {
-    /**
-     * @inheritDoc
-     */
-    function getActionName() :string
-    {
-        return 'Отменить';
-    }
+
+    protected $actionName = 'Отменить';
+    protected $actionSystemName = 'cancel';
 
     /**
      * @inheritDoc
      */
-    function getActionSystemName() :string
+    function checkAvailable(Task $task, ?int $currentUser) :bool
     {
-        return 'cancel';
-    }
-
-    /**
-     * @inheritDoc
-     */
-    function userRoleCheck($currentUser, $clientId, $executorId) :bool
-    {
-        return $currentUser === $clientId;
+        return $currentUser === $task->getClientId() && $task->status === 'new';
     }
 }
