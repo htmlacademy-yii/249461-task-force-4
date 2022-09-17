@@ -7,6 +7,7 @@ use TaskForce\classes\actions\ActionComplete;
 use TaskForce\classes\actions\ActionRefuse;
 use TaskForce\classes\actions\ActionRespond;
 use TaskForce\classes\actions\ActionStart;
+use TaskForce\classes\exceptions\TaskException;
 
 class Task
 {
@@ -20,16 +21,6 @@ class Task
     const STATUS_FAILED = 'failed';         // провалена
 
     /**
-     * Константы доступных действий
-     */
-    const ACTION_START = 'start';           // начать
-    const ACTION_CANCEL = 'cancel';         // отменить
-    const ACTION_COMPLETE = 'complete';     // выполнена
-    const ACTION_RESPOND = 'respond';       // откликнутся
-    const ACTION_REFUSE = 'refuse';         // отказаться
-
-
-    /**
      * Список названий доступных статусов
      */
     const MAP_STATUS = [
@@ -38,17 +29,6 @@ class Task
         self::STATUS_COMPLETED => 'Выполнено',
         self::STATUS_PROGRESS => 'В работе',
         self::STATUS_FAILED => 'Провалено'
-    ];
-
-    /**
-     * Список названий доступных действий
-     */
-    const MAP_ACTION = [
-        self::ACTION_START => 'Принять',
-        self::ACTION_CANCEL => 'Отменить',
-        self::ACTION_COMPLETE => 'Выполнено',
-        self::ACTION_RESPOND => 'Откликнуться',
-        self::ACTION_REFUSE => 'Отказаться',
     ];
 
     /**
@@ -62,7 +42,9 @@ class Task
     private $executorId;
     private $clientId;
 
-
+    /**
+     * Объекты классов действий
+     */
     public $actionCancel;
     public $actionComplete;
     public $actionRespond;
@@ -91,49 +73,40 @@ class Task
 
 
     /**
-     * @return int ID исполнителя
+     * Возвращает ID  исполнителя
+     * @return ?int ID исполнителя
      */
-    public function getExecutorId()
+    public function getExecutorId() :?int
     {
         return $this->executorId;
     }
 
 
     /**
+     * Возвращает ID  клиента
      * @return int ID клиента
      */
-    public function getClientId()
+    public function getClientId() :int
     {
         return $this->clientId;
     }
 
     /**
+     * Возвращает массив всех статусов для задания
      * @return string[] карту статусов
      */
-    public function getMapStatus()
+    public function getMapStatus() :array
     {
         return self::MAP_STATUS;
-    }
-
-
-    /**
-     * @param $action string Действие пользователя
-     * @return string Название действия
-     */
-    public function getMapAction($action)
-    {
-        if (!array_key_exists($action, self::MAP_ACTION)) {
-            return 'Действие не существет';
-        }
-        return self::MAP_ACTION[$action];
     }
 
     /**
      * Метод для получения статуса, в которой он перейдёт после выполнения указанного действия
      * @param $action string Действие с заданием
      * @return string Статус задания
+     * @throws TaskException Ошибка если указано недопустимое действие
      */
-    public function getNextStatus(string $action)
+    public function getNextStatus(string $action) :string
     {
         switch ($action) {
             case $this->actionStart->getActionSystemName():
@@ -147,7 +120,7 @@ class Task
             case $this->actionRefuse->getActionSystemName():
                 return self::STATUS_FAILED;
             default:
-                return $this->status;
+                throw new TaskException("Указано неверное действие");
         }
     }
 
@@ -155,6 +128,7 @@ class Task
      * Метод для получения доступных действий для указанного статуса
      * @param ?int $currentUserId Идентификатор пользователя
      * @return array Доступное действие с заданием, если оно доступно
+     * @throws TaskException Ошибка если нет доступных действий
      */
     public function getAvailableActions(?int $currentUserId) :array
     {
@@ -176,13 +150,26 @@ class Task
             $actions[] = $this->actionStart;
         }
 
+        if (empty($actions)) {
+            throw new TaskException('Нет доступных действий');
+        }
+
         return $actions;
     }
 
-    public function startTask(int $executorId)
+    /**
+     * @param int $executorId Присвоение ID исполнителя
+     * @return void
+     * @throws TaskException Текст ошибки
+     */
+    public function startTask(int $executorId) :void
     {
         if ($executorId === $this->clientId) {
-            return print('Заказчик не может быть исполнителем');
+            throw new TaskException('Заказчик не может быть исполнителем');
+        }
+
+        if ($this->status !== self::STATUS_NEW) {
+            throw new TaskException('Статус таска или добавлен исполнитель не может быть изменен');
         }
 
         $this->executorId = $executorId;
