@@ -3,9 +3,11 @@
 namespace TaskForce\classes;
 
 use SplFileObject;
-use FilesystemIterator;
 use TaskForce\classes\exceptions\FileConverterException;
 
+/**
+ * Класс для конвертации CSV файла с данными в SQl INSERT запрос
+ */
 class SqlDataConverter
 {
     private $fileName;
@@ -17,6 +19,12 @@ class SqlDataConverter
 
     private $enterNewLine = "\n";
 
+    /**
+     * @param string $fileName Имя файла который необходимо обработать
+     * @param string $filePath Путь к файлу
+     * @param array $columns Массив с названиями колонок таблицы
+     * @param string $tableName Наименование таблицы в БД
+     */
     public function __construct(string $fileName, string $filePath, array $columns, string $tableName)
     {
         $this->fileName = $fileName;
@@ -27,7 +35,7 @@ class SqlDataConverter
 
     /**
      * Возвращает массив из данных переданного файла
-     * @return void
+     * @return void После работы получаем заполненный массив из данных CSV файла
      * @throws FileConverterException
      */
     private function import():void {
@@ -37,11 +45,9 @@ class SqlDataConverter
 
         $file = $this->filePath . '/' . $this->fileName;
 
-
         if (!file_exists($file)) {
             throw new FileConverterException('Файл не существует');
         }
-
 
         try {
             $this->fileObject = new SplFileObject($file);
@@ -64,7 +70,7 @@ class SqlDataConverter
     }
 
     /**
-     * Массив заголовков CSV файла
+     * Получаем заголовками ввиде массива из переданного файла
      * @return array|null
      */
     private function getHeaderData():?array {
@@ -75,7 +81,7 @@ class SqlDataConverter
     }
 
     /**
-     * Перебирает строки с данными в переданном файле
+     * Преобразуем каждую строку данных в массив
      * @return iterable|null
      */
     private function getNextLine():?iterable {
@@ -89,7 +95,7 @@ class SqlDataConverter
     }
 
     /**
-     * Проверяет переданный массив колонок, что все значения являеются строкой
+     * Проверяем переданный массив колонок, что все значения являеются строкой
      * @param array $columns
      * @return bool
      */
@@ -112,7 +118,7 @@ class SqlDataConverter
     }
 
     /**
-     * Генерирует строки данных для sql запроса добавления в БД
+     * Генерируем строки данных для sql запроса добавления в БД
      * @return array|string|string[]
      */
     private function getSqlInsertDataValue() {
@@ -141,7 +147,7 @@ class SqlDataConverter
     }
 
     /**
-     * Создает файл в тойже директории с исходником и записывает сгенерированный запрос
+     * Создает SQL файл рядом с исходником и записывает сгенерированный запрос
      * @return void
      */
     private function createSqlFile() {
@@ -160,6 +166,11 @@ class SqlDataConverter
         $newSql->fwrite($this->getSqlInsert());
     }
 
+    /**
+     * Вызов метода обрабатывает переданный файл и созвращает сгенерированный файл с SQL запросом
+     * @return void
+     * @throws FileConverterException
+     */
     public function convert() {
         $this->import();
         $this->createSqlFile();
