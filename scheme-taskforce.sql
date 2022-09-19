@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS `cities` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `add_date` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
   `name` VARCHAR(255) NOT NULL,
-  `lat` DECIMAL NULL,
-  `lng` DECIMAL NULL,
+  `lat` DECIMAL(10,7) NULL,
+  `lng` DECIMAL(10,7) NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC))
   ENGINE = InnoDB;
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `show_contacts` TINYINT NOT NULL DEFAULT 1,
   `tasks_completed` INT NOT NULL DEFAULT 0,
   `tasks_failed` INT NOT NULL DEFAULT 0,
-  `raiting` DECIMAL NOT NULL DEFAULT 0,
+  `raiting` DECIMAL(3,2) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `user_city_idx` (`city_id` ASC),
   CONSTRAINT `user_city`
@@ -75,6 +75,7 @@ CREATE TABLE IF NOT EXISTS `categories` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `add_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `name` VARCHAR(255) NOT NULL,
+  `icon` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC))
   ENGINE = InnoDB;
@@ -124,8 +125,8 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   `status` VARCHAR(255) NOT NULL DEFAULT 'new',
   `address` VARCHAR(255) NULL,
   `city_id` INT NULL,
-  `lat` DECIMAL NULL,
-  `lng` DECIMAL NULL,
+  `lat` DECIMAL(10,7) NULL,
+  `lng` DECIMAL(10,7) NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),
   INDEX `author_id_idx` (`author_id` ASC),

@@ -5,6 +5,8 @@ require_once "vendor/autoload.php";
 use TaskForce\classes\Task;
 use TaskForce\classes\exceptions\TaskException;
 
+use TaskForce\classes\SqlDataConverter;
+
 $client = 222;
 $executor = 111;
 $request_executor = 333;
@@ -29,4 +31,33 @@ try {
     assert($newTask->getAvailableActions($client)[0]->getActionSystemName() === 'complete', 'complete status');
 } catch (TaskException $e) {
     echo "Error: " . $e->getMessage();
+}
+
+
+use TaskForce\classes\exceptions\FileConverterException;
+
+$dataFilesDir = __DIR__ . '\data';
+
+$citiesFileName = 'cities.csv';
+$citiesColumns = ['name','lat','lng'];
+$citiesDbTable = 'cities';
+
+$citiesConverter = new SqlDataConverter($citiesFileName, $dataFilesDir, $citiesColumns, $citiesDbTable);
+
+try {
+    $citiesConverter->convert();
+} catch (FileConverterException $e) {
+    echo $e->getMessage();
+}
+
+$categoriesFileName = 'categories.csv';
+$categoriesColumns = ['name','icon'];
+$categoriesDbTable = 'categories';
+
+$categoriesConverter = new SqlDataConverter($categoriesFileName, $dataFilesDir, $categoriesColumns, $categoriesDbTable);
+
+try {
+    $categoriesConverter->convert();
+} catch (FileConverterException $e) {
+    echo $e->getMessage();
 }
