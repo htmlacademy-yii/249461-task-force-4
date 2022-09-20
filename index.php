@@ -6,6 +6,7 @@ use TaskForce\classes\Task;
 use TaskForce\classes\exceptions\TaskException;
 
 use TaskForce\classes\SqlDataConverter;
+use TaskForce\classes\ConverterCsvToSql;
 
 $client = 222;
 $executor = 111;
@@ -37,8 +38,12 @@ try {
 use TaskForce\classes\exceptions\FileConverterException;
 
 $dataFilesDir = __DIR__ . '\data';
+/*
+ * Тут так сказать первая реализация которая начала работать на преобразование отдельно взятого файла
+ * Затем понял что перемудрил с кол-вом передаваемой информации
+ * */
 
-$citiesFileName = 'cities.csv';
+/*$citiesFileName = 'cities.csv';
 $citiesColumns = ['name','lat','lng'];
 $citiesDbTable = 'cities';
 
@@ -60,4 +65,17 @@ try {
     $categoriesConverter->convert();
 } catch (FileConverterException $e) {
     echo $e->getMessage();
+}*/
+
+/*
+ * Вторая версия конвертора, которая принимает только папку с файлами, сама отсортировывает
+ * CSV файлы, и генерирует из них SQL файлы с INSERT
+ * */
+
+try {
+    $converter = new ConverterCsvToSql($dataFilesDir);
+    $converter->start();
+} catch (FileConverterException $e) {
+    echo $e->getMessage();
 }
+
