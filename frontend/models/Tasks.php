@@ -30,7 +30,7 @@ use Yii;
  * @property TaskFiles[] $taskFiles
  * @property Users $worker
  */
-class Tasks extends \yii\db\ActiveRecord
+class Tasks extends yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -85,7 +85,7 @@ class Tasks extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Author]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
     public function getAuthor()
     {
@@ -95,7 +95,7 @@ class Tasks extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Category]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
     public function getCategory()
     {
@@ -105,7 +105,7 @@ class Tasks extends \yii\db\ActiveRecord
     /**
      * Gets query for [[City]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
     public function getCity()
     {
@@ -115,7 +115,7 @@ class Tasks extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Responses]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
     public function getResponses()
     {
@@ -125,7 +125,7 @@ class Tasks extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Reviews]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
     public function getReviews()
     {
@@ -135,7 +135,7 @@ class Tasks extends \yii\db\ActiveRecord
     /**
      * Gets query for [[TaskFiles]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
     public function getTaskFiles()
     {
@@ -145,7 +145,7 @@ class Tasks extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Worker]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
     public function getWorker()
     {

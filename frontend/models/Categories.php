@@ -15,7 +15,7 @@ use Yii;
  * @property Tasks[] $tasks
  * @property UserCategories[] $userCategories
  */
-class Categories extends \yii\db\ActiveRecord
+class Categories extends yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -53,7 +53,7 @@ class Categories extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Tasks]].
      *
-     * @return \yii\db\ActiveQuery|TasksQuery
+     * @return yii\db\ActiveQuery|TasksQuery
      */
     public function getTasks()
     {
@@ -63,7 +63,7 @@ class Categories extends \yii\db\ActiveRecord
     /**
      * Gets query for [[UserCategories]].
      *
-     * @return \yii\db\ActiveQuery|UserCategoriesQuery
+     * @return yii\db\ActiveQuery|UserCategoriesQuery
      */
     public function getUserCategories()
     {

@@ -16,7 +16,7 @@ use Yii;
  * @property Tasks[] $tasks
  * @property Users[] $users
  */
-class Cities extends \yii\db\ActiveRecord
+class Cities extends yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -56,7 +56,7 @@ class Cities extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Tasks]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
     public function getTasks()
     {
@@ -66,7 +66,7 @@ class Cities extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Users]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
     public function getUsers()
     {

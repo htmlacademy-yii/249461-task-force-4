@@ -18,7 +18,7 @@ use Yii;
  * @property Tasks $task
  * @property Users $user
  */
-class Responses extends \yii\db\ActiveRecord
+class Responses extends yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -62,7 +62,7 @@ class Responses extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Task]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
     public function getTask()
     {
@@ -72,7 +72,7 @@ class Responses extends \yii\db\ActiveRecord
     /**
      * Gets query for [[User]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
     public function getUser()
     {

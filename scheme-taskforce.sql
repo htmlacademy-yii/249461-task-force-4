@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `show_contacts` TINYINT NOT NULL DEFAULT 1,
   `tasks_completed` INT NOT NULL DEFAULT 0,
   `tasks_failed` INT NOT NULL DEFAULT 0,
-  `raiting` DECIMAL(3,2) NOT NULL DEFAULT 0,
+  `rating` DECIMAL(3,2) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `user_city_idx` (`city_id` ASC),
   CONSTRAINT `user_city`

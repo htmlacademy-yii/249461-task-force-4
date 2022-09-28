@@ -13,7 +13,7 @@ use Yii;
  *
  * @property Tasks $task
  */
-class TaskFiles extends \yii\db\ActiveRecord
+class TaskFiles extends yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -51,7 +51,7 @@ class TaskFiles extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Task]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
     public function getTask()
     {

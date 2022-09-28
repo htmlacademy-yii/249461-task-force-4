@@ -14,7 +14,7 @@ use Yii;
  * @property Categories $category
  * @property Users $user
  */
-class UserCategories extends \yii\db\ActiveRecord
+class UserCategories extends yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -52,7 +52,7 @@ class UserCategories extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Category]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
     public function getCategory()
     {
@@ -62,7 +62,7 @@ class UserCategories extends \yii\db\ActiveRecord
     /**
      * Gets query for [[User]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
     public function getUser()
     {

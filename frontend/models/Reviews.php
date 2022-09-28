@@ -19,7 +19,7 @@ use Yii;
  * @property Tasks $task
  * @property Users $worker
  */
-class Reviews extends \yii\db\ActiveRecord
+class Reviews extends yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -64,7 +64,7 @@ class Reviews extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Author]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
     public function getAuthor()
     {
@@ -74,7 +74,7 @@ class Reviews extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Task]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
     public function getTask()
     {
@@ -84,7 +84,7 @@ class Reviews extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Worker]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
     public function getWorker()
     {

@@ -22,17 +22,17 @@ use Yii;
  * @property int $show_contacts
  * @property int $tasks_completed
  * @property int $tasks_failed
- * @property float $raiting
+ * @property float $rating
  *
  * @property Cities $city
  * @property Responses[] $responses
- * @property Reviews[] $reviews
- * @property Reviews[] $reviews0
- * @property Tasks[] $tasks
- * @property Tasks[] $tasks0
+ * @property Reviews[] $authorReviews
+ * @property Reviews[] $workerReviews
+ * @property Tasks[] $authorTasks
+ * @property Tasks[] $workerTasks
  * @property UserCategories[] $userCategories
  */
-class Users extends \yii\db\ActiveRecord
+class Users extends yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -52,7 +52,7 @@ class Users extends \yii\db\ActiveRecord
             [['name', 'email', 'password'], 'required'],
             [['is_worker', 'city_id', 'phone', 'show_contacts', 'tasks_completed', 'tasks_failed'], 'integer'],
             [['about_me'], 'string'],
-            [['raiting'], 'number'],
+            [['rating'], 'number'],
             [['name'], 'string', 'max' => 255],
             [['email'], 'string', 'max' => 128],
             [['password', 'telegram'], 'string', 'max' => 64],
@@ -82,14 +82,14 @@ class Users extends \yii\db\ActiveRecord
             'show_contacts' => 'Show Contacts',
             'tasks_completed' => 'Tasks Completed',
             'tasks_failed' => 'Tasks Failed',
-            'raiting' => 'Raiting',
+            'rating' => 'Rating',
         ];
     }
 
     /**
      * Gets query for [[City]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
     public function getCity()
     {
@@ -99,7 +99,7 @@ class Users extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Responses]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
     public function getResponses()
     {
@@ -109,19 +109,19 @@ class Users extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Reviews]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
-    public function getReviews()
+    public function getAuthorReviews()
     {
         return $this->hasMany(Reviews::class, ['author_id' => 'id']);
     }
 
     /**
-     * Gets query for [[Reviews0]].
+     * Gets query for [[Reviews]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
-    public function getReviews0()
+    public function getWorkerReviews()
     {
         return $this->hasMany(Reviews::class, ['worker_id' => 'id']);
     }
@@ -129,19 +129,19 @@ class Users extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Tasks]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
-    public function getTasks()
+    public function getAuthorTasks()
     {
         return $this->hasMany(Tasks::class, ['author_id' => 'id']);
     }
 
     /**
-     * Gets query for [[Tasks0]].
+     * Gets query for [[Tasks]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
-    public function getTasks0()
+    public function getWorkerTasks()
     {
         return $this->hasMany(Tasks::class, ['worker_id' => 'id']);
     }
@@ -149,7 +149,7 @@ class Users extends \yii\db\ActiveRecord
     /**
      * Gets query for [[UserCategories]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return yii\db\ActiveQuery
      */
     public function getUserCategories()
     {
