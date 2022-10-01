@@ -458,7 +458,8 @@ template {
   margin-top: 0;
   margin-bottom: 0;
   width: 150px;
-  text-align: right; }
+  text-align: right;
+  white-space: nowrap;}
 
 .side-menu-list {
   list-style: none;
