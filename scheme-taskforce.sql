@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `avatar` VARCHAR(512) NULL,
   `birthday` DATE NULL,
   `city_id` INT NULL,
-  `phone` INT NULL,
+  `phone` VARCHAR(20) NULL,
   `telegram` VARCHAR(64) NULL,
   `about_me` TEXT NULL,
   `show_contacts` TINYINT NOT NULL DEFAULT 1,
