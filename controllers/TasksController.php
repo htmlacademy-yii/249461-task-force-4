@@ -13,17 +13,21 @@ class TasksController extends Controller
 
     public function getTasks()
     {
-        return Tasks::find()
-            ->where(['status' => 'new'])
-            ->joinWith(['category','city'])
-            ->orderBy(['add_date'=> SORT_DESC])
-            ->limit(self::TASKS_PER_PAGE)->all();
+        return new ActiveDataProvider([
+            'query' => Tasks::find()
+                ->where(['status' => 'new'])
+                ->joinWith(['category','city'])
+                ->orderBy(['add_date'=> SORT_DESC]),
+            'pagination' => [
+                'pageSize' => self::TASKS_PER_PAGE,
+            ],
+        ]);
     }
 
     public function actionIndex()
     {
-        $tasks = $this->getTasks();
-        return $this->render('index', compact("tasks"));
+        $dataProvider = $this->getTasks();
+        return $this->render('index', ['dataProvider'=>$dataProvider]);
     }
 
 

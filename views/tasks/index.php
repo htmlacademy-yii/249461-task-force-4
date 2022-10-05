@@ -2,9 +2,10 @@
 
 /** @var yii\web\View $this */
 
-/** @var \taskforce\models\Tasks $model */
+/** @var \app\models\Tasks $model */
 
 use yii\helpers\Html;
+use yii\widgets\ListView;
 
 $this->title = 'Новые задания';
 $this->params['breadcrumbs'][] = $this->title;
@@ -13,22 +14,48 @@ $this->params['breadcrumbs'][] = $this->title;
 <main class="main-content container">
     <div class="left-column">
         <h3 class="head-main head-task"><?= Html::encode($this->title) ?></h3>
-        <?php foreach ($tasks as $task) : ?>
-            <div id="<?= $task->id ?>" class="task-card">
-                <div class="header-task">
-                    <a href="#" class="link link--block link--big"><?= $task->title ?></a>
-                    <p class="price price--task"><?= $task->price ?> ₽</p>
-                </div>
-                <p class="info-text"><span class="current-time">4 часа </span>назад</p>
-                <p class="task-text"><?= $task->description ?>
-                </p>
-                <div class="footer-task">
-                    <p class="info-text town-text"><?= $task->city->name ?></p>
-                    <p class="info-text category-text"><?= $task->category->name ?></p>
-                    <a href="#" class="button button--black">Смотреть Задание</a>
-                </div>
-            </div>
-        <?php endforeach; ?>
+        <?= ListView::widget([
+            'dataProvider' => $dataProvider,
+            'itemView' => '_taskslist_item',
+
+            'summary' => '',
+
+            'pager' => [
+                'maxButtonCount' => 5,
+                'options' => [
+                    'class' => 'pagination-list',
+                ],
+                'linkOptions' => [
+                    'class' => 'link link--page',
+                ],
+                'pageCssClass' => 'pagination-item',
+                'activePageCssClass' => 'pagination-item--active',
+                'prevPageCssClass' => 'pagination-item mark',
+                'nextPageCssClass' => 'pagination-item mark',
+                'prevPageLabel' => '',
+                'nextPageLabel' => '',
+            ],
+        ]);
+        ?>
+        <!--<div class="pagination-wrapper">
+            <ul class="pagination-list">
+                <li class="pagination-item mark">
+                    <a href="#" class="link link--page"></a>
+                </li>
+                <li class="pagination-item">
+                    <a href="#" class="link link--page">1</a>
+                </li>
+                <li class="pagination-item pagination-item--active">
+                    <a href="#" class="link link--page">2</a>
+                </li>
+                <li class="pagination-item">
+                    <a href="#" class="link link--page">3</a>
+                </li>
+                <li class="pagination-item mark">
+                    <a href="#" class="link link--page"></a>
+                </li>
+            </ul>
+        </div>-->
     </div>
     <div class="right-column">
         <div class="right-card black">
