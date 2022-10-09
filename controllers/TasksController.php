@@ -20,6 +20,7 @@ class TasksController extends Controller
                 ->orderBy(['add_date'=> SORT_DESC]),
             'pagination' => [
                 'pageSize' => self::TASKS_PER_PAGE,
+                'defaultPageSize' => self::TASKS_PER_PAGE,
             ],
         ]);
     }
