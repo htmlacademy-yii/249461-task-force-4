@@ -8,7 +8,8 @@ use yii\helpers\Html;
         <a href="#" class="link link--block link--big"><?= Html::encode($model->title) ?></a>
         <p class="price price--task"><?= Html::encode($model->price) ?> ₽</p>
     </div>
-    <p class="info-text"><span class="current-time">4 часа </span>назад</p>
+    <!--<p class="info-text"><span class="current-time">4 часа </span>назад</p>-->
+    <p class="info-text"><span class="current-time"><?= Html::encode($model->add_date) ?></p>
     <p class="task-text"><?= Html::encode($model->description) ?>
     </p>
     <div class="footer-task">
