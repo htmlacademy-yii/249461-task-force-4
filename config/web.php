@@ -50,6 +50,11 @@ $config = [
                 'tasks' => 'tasks/index',
             ],
         ],
+        'formatter' => [
+            'locale' => 'ru-RU',
+            'datetimeFormat'=> 'dd MMMM Y HH:mm',
+            'dateFormat' => 'dd MMMM Y',
+        ],
     ],
     'params' => $params,
 ];

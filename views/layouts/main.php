@@ -4,13 +4,15 @@
 /** @var string $content */
 
 use common\widgets\Alert;
-use app\assets\AppAsset;
+use app\assets\MainAsset;
 use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
 
-AppAsset::register($this);
+MainAsset::register($this);
+
+//AppAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
     <!DOCTYPE html>
@@ -20,20 +22,19 @@ AppAsset::register($this);
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <?php $this->registerCsrfMetaTags() ?>
         <title><?= Html::encode($this->title) ?></title>
-        <?php /*$this->head() */?> <!--Ломает верстку-->
-        <link rel="stylesheet" href="css/style.css">
+        <?php $this->head() ?>
     </head>
     <body>
     <?php $this->beginBody() ?>
     <header class="page-header">
         <nav class="main-nav">
             <a href='#' class="header-logo">
-                <img class="logo-image" src="img/logotype.png" width=227 height=60 alt="taskforce">
+                <img class="logo-image" src="/img/logotype.png" width=227 height=60 alt="taskforce">
             </a>
             <div class="nav-wrapper">
                 <ul class="nav-list">
                     <li class="list-item list-item--active">
-                        <a class="link link--nav" >Новое</a>
+                        <a href="/tasks" class="link link--nav" >Новое</a>
                     </li>
                     <li class="list-item">
                         <a href="#" class="link link--nav">Мои задания</a>
@@ -49,7 +50,7 @@ AppAsset::register($this);
         </nav>
         <div class="user-block">
             <a href="#">
-                <img class="user-photo" src="img/man-glasses.png" width="55" height="55" alt="Аватар">
+                <img class="user-photo" src="/img/man-glasses.png" width="55" height="55" alt="Аватар">
             </a>
             <div class="user-menu">
                 <p class="user-name">Василий</p>
@@ -69,8 +70,8 @@ AppAsset::register($this);
             </div>
         </div>
     </header>
-    <main class="main-content main-content--center container">
-        <?= $content ?>
+    <main class="main-content container">
+    <?= $content ?>
     </main>
 
     <?php $this->endBody() ?>

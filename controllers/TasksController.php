@@ -7,7 +7,6 @@ use Yii;
 use yii\web\Controller;
 use yii\data\ActiveDataProvider;
 use yii\db\Expression;
-
 use app\models\forms\TasksFilterForm;
 
 class TasksController extends Controller
@@ -78,5 +77,16 @@ class TasksController extends Controller
 
         ]);
         return $this->render('index', ['dataProvider' => $dataProvider, 'tasksFilterForm' => $tasksFilterForm]);
+    }
+
+    public function actionView($id) {
+
+        $task = Tasks::findOne($id);
+
+        if(!$task) {
+            throw new NotFoundHttpException("Таск с ID $id не найден");
+        }
+
+        return $this->render('task', ['task'=>$task]);
     }
 }

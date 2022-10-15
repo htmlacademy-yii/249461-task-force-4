@@ -1,11 +1,12 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 ?>
 <div id="<?= $model->id ?>" class="task-card">
     <div class="header-task">
-        <a href="#" class="link link--block link--big"><?= Html::encode($model->title) ?></a>
+        <a href="<?=Url::toRoute(['tasks/view/','id' => $model->id]); ?>" class="link link--block link--big"><?= Html::encode($model->title) ?></a>
         <p class="price price--task"><?= Html::encode($model->price) ?> ₽</p>
     </div>
     <!--<p class="info-text"><span class="current-time">4 часа </span>назад</p>-->
