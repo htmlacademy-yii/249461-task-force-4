@@ -151,4 +151,36 @@ class Tasks extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Users::class, ['id' => 'worker_id']);
     }
+
+    /**
+     * Константы доступных статусов
+     */
+    const STATUS_NEW = 'new';               // новая
+    const STATUS_CANCELED = 'canceled';     // отменена
+    const STATUS_PROGRESS = 'progress';     // в работе
+    const STATUS_COMPLETED = 'completed';   // выполнена
+    const STATUS_FAILED = 'failed';         // провалена
+
+    /**
+     * Список названий доступных статусов
+     */
+    private function getStatusesList()
+    {
+        return [
+                self::STATUS_NEW => 'Новое',
+                self::STATUS_CANCELED => 'Отменено',
+                self::STATUS_COMPLETED => 'Выполнено',
+                self::STATUS_PROGRESS => 'В работе',
+                self::STATUS_FAILED => 'Провалено'
+            ];
+    }
+
+    /**
+     * Название текущего статусов
+     */
+    public function getStatusName()
+    {
+        $statusList = $this->getStatusesList();
+        return $statusList[$this->status];
+    }
 }
