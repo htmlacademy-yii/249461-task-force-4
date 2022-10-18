@@ -50,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="feedback-wrapper">
                 <div class="stars-rating small"><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span>&nbsp;</span></div>
-                <p class="info-text"><span class="current-time">25 минут </span>назад</p>
+                <p class="info-text"><span class="current-time"><?= Yii::$app->formatter->format($userReview->add_date, 'relativeTime') ?></p>
             </div>
         </div>
     <?php endforeach; ?>
@@ -65,7 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <dt>Место в рейтинге</dt>
             <dd>25 место</dd>
             <dt>Дата регистрации</dt>
-            <dd><?= Html::encode($user->reg_date) ?></dd>
+            <dd><?= Yii::$app->formatter->format($user->reg_date, 'relativeTime') ?></dd>
             <?php if ($user->is_worker === 1) : ?>
             <dt>Статус</dt>
             <dd>Открыт для новых заказов</dd>

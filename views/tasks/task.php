@@ -46,8 +46,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </p>
                 </div>
                 <div class="feedback-wrapper">
-                    <p class="info-text"><span class="current-time"><?= Html::encode($responce->add_date) ?> </span>назад
-                    </p>
+                    <p class="info-text"><span class="current-time"><?= Yii::$app->formatter->format($responce->add_date, 'relativeTime') ?></p>
                     <p class="price price--small"><?= Html::encode($responce->price) ?> ₽</p>
                 </div>
                 <div class="button-popup">
