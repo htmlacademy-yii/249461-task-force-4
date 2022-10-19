@@ -2,14 +2,14 @@
 
 namespace app\controllers;
 
-use app\models\forms\UserRegistration;
+use app\models\Users;
 use yii\web\Controller;
 use Yii;
 
 class RegistrationController extends Controller
 {
     public function actionIndex() {
-        $newUser = new UserRegistration();
+        $newUser = new Users();
 
         if (Yii::$app->request->getIsPost()) {
             $newUser->load(Yii::$app->request->post());
