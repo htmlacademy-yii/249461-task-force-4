@@ -53,8 +53,10 @@ class Users extends \yii\db\ActiveRecord
             [['is_worker', 'city_id', 'phone', 'show_contacts', 'tasks_completed', 'tasks_failed'], 'integer'],
             [['about_me'], 'string'],
             [['rating'], 'number'],
+            [['name'], 'trim'],
             [['name'], 'string', 'max' => 255],
-            [['email'], 'string', 'max' => 128],
+            [['email'], 'unique'],
+            [['email'], 'email'],
             [['password', 'telegram'], 'string', 'max' => 64],
             [['avatar'], 'string', 'max' => 512],
             [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::class, 'targetAttribute' => ['city_id' => 'id']],
@@ -68,23 +70,26 @@ class Users extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'reg_date' => 'Reg Date',
-            'name' => 'Name',
+            'reg_date' => 'Дата регистрации',
+            'name' => 'Ваше имя',
             'email' => 'Email',
-            'password' => 'Password',
-            'is_worker' => 'Is Worker',
-            'avatar' => 'Avatar',
-            'birthday' => 'Birthday',
-            'city_id' => 'City ID',
-            'phone' => 'Phone',
+            'password' => 'Пароль',
+            'password_retype' => 'Повтор пароля',
+            'is_worker' => 'я собираюсь откликаться на заказы',
+            'avatar' => 'Аватар',
+            'birthday' => 'День рождения',
+            'city_id' => 'Город',
+            'phone' => 'Номер телефона',
             'telegram' => 'Telegram',
-            'about_me' => 'About Me',
-            'show_contacts' => 'Show Contacts',
-            'tasks_completed' => 'Tasks Completed',
-            'tasks_failed' => 'Tasks Failed',
-            'rating' => 'Rating',
+            'about_me' => 'Информация о себе',
+            'show_contacts' => 'Показывать контакты',
+            'tasks_completed' => 'Выполненые задачи',
+            'tasks_failed' => 'Проваленный задачи',
+            'rating' => 'Рейтинг',
         ];
     }
+
+    public $password_retype;
 
     /**
      * Gets query for [[City]].

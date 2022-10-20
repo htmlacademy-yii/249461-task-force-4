@@ -2,9 +2,13 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+use app\services\DateServices;
+
+$dateServices = new DateServices();
 
 $this->title = $user->name;
 $this->params['breadcrumbs'][] = $this->title;
+
 
 ?>
 <div class="left-column">
@@ -36,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php endif; ?>
         <div class="bio">
             <p class="head-info">Био</p>
-            <p class="bio-info"><span class="country-info">Россия</span>, <span class="town-info"><?= Html::encode($user->city->name) ?></span>, <span class="age-info">30</span> лет</p>
+            <p class="bio-info"><span class="country-info">Россия</span>, <span class="town-info"><?= Html::encode($user->city->name) ?></span>, <span class="age-info"><?= $dateServices->countUserAge($user->birthday) ?></span></p>
         </div>
     </div>
     <h4 class="head-regular">Отзывы заказчиков</h4>
@@ -50,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="feedback-wrapper">
                 <div class="stars-rating small"><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span>&nbsp;</span></div>
-                <p class="info-text"><span class="current-time">25 минут </span>назад</p>
+                <p class="info-text"><span class="current-time"><?= $dateServices->elapsed_time($userReview->add_date) ?></p>
             </div>
         </div>
     <?php endforeach; ?>
@@ -65,7 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <dt>Место в рейтинге</dt>
             <dd>25 место</dd>
             <dt>Дата регистрации</dt>
-            <dd><?= Html::encode($user->reg_date) ?></dd>
+            <dd><?= $dateServices->elapsed_time($user->reg_date) ?></dd>
             <?php if ($user->is_worker === 1) : ?>
             <dt>Статус</dt>
             <dd>Открыт для новых заказов</dd>

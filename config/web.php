@@ -56,6 +56,7 @@ $config = [
             'dateFormat' => 'dd MMMM Y',
         ],
     ],
+    'language' => 'ru-RU',
     'params' => $params,
 ];
 

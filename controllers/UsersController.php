@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\forms\UserRegistration;
 use yii\web\Controller;
 use app\models\Users;
 

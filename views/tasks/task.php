@@ -2,6 +2,9 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+use app\services\DateServices;
+
+$dateServices = new DateServices();
 
 
 $this->title = $task->title;
@@ -46,8 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </p>
                 </div>
                 <div class="feedback-wrapper">
-                    <p class="info-text"><span class="current-time"><?= Html::encode($responce->add_date) ?> </span>назад
-                    </p>
+                    <p class="info-text"><span class="current-time"><?= $dateServices->elapsed_time($responce->add_date) ?></p>
                     <p class="price price--small"><?= Html::encode($responce->price) ?> ₽</p>
                 </div>
                 <div class="button-popup">
@@ -67,7 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <dt>Категория</dt>
             <dd><?= Html::encode($task->category->name) ?></dd>
             <dt>Дата публикации</dt>
-            <dd><?= Yii::$app->formatter->format($task->add_date, 'relativeTime') ?></dd>
+            <dd><?= $dateServices->elapsed_time($task->add_date) ?></dd>
             <?php if ($task->end_date): ?>
                 <dt>Срок выполнения</dt>
                 <dd><?= Html::encode($task->end_date) ?></dd>
