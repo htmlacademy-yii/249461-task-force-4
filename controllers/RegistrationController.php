@@ -4,10 +4,28 @@ namespace app\controllers;
 
 use app\models\Users;
 use yii\web\Controller;
+use yii\filters\AccessControl;
 use Yii;
 
 class RegistrationController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['index'],
+                'rules' => [
+                    [
+                        'actions' => ['index'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actionIndex() {
         $newUser = new Users();
 

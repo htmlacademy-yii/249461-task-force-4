@@ -7,6 +7,11 @@ $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'language' => 'ru-RU',
+    'timeZone' => 'Europe/Moscow',
+    'name' => 'Taskforce',
+    'layout' => 'main',
+    'defaultRoute' => 'landing',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -20,11 +25,11 @@ $config = [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => 'app\models\Users',
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [
-            'errorAction' => 'site/error',
+            'errorAction' => 'landing/error',
         ],
         'mailer' => [
             'class' => \yii\symfonymailer\Mailer::class,
@@ -56,7 +61,6 @@ $config = [
             'dateFormat' => 'dd MMMM Y',
         ],
     ],
-    'language' => 'ru-RU',
     'params' => $params,
 ];
 

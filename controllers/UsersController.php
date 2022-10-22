@@ -3,10 +3,10 @@
 namespace app\controllers;
 
 use app\models\forms\UserRegistration;
-use yii\web\Controller;
+use app\controllers\SecuredController;
 use app\models\Users;
 
-class UsersController  extends Controller
+class UsersController  extends SecuredController
 {
     public function actionView($id) {
 
