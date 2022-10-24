@@ -16,7 +16,9 @@ $dateServices = new DateServices();
     <p class="task-text"><?= Html::encode($model->description) ?>
     </p>
     <div class="footer-task">
+        <?php if (!empty($model->city->name)) : ?>
         <p class="info-text town-text"><?= Html::encode($model->city->name) ?></p>
+        <?php endif; ?>
         <p class="info-text category-text"><?= Html::encode($model->category->name) ?></p>
         <a href="#" class="button button--black">Смотреть Задание</a>
     </div>

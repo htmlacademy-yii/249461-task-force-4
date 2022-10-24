@@ -21,11 +21,14 @@ $this->params['breadcrumbs'][] = $this->title;
     <a href="#" class="button button--blue action-btn" data-action="act_response">Откликнуться на задание</a>
     <a href="#" class="button button--orange action-btn" data-action="refusal">Отказаться от задания</a>
     <a href="#" class="button button--pink action-btn" data-action="completion">Завершить задание</a>
+
+    <?php if (!empty($task->address)) : ?>
     <div class="task-map">
         <img class="map" src="../img/map.png" width="725" height="346" alt="<?= Html::encode($task->address) ?>">
         <p class="map-address town"><?= Html::encode($task->city->name) ?></p>
         <p class="map-address"><?= Html::encode($task->address) ?></p>
     </div>
+    <?php endif; ?>
     <h4 class="head-regular">Отклики на задание</h4>
     <?php if (!!$task->responses) : ?>
         <?php foreach ($task->responses as $responce) : ?>
@@ -72,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <dd><?= $dateServices->elapsed_time($task->add_date) ?></dd>
             <?php if ($task->end_date): ?>
                 <dt>Срок выполнения</dt>
-                <dd><?= Html::encode($task->end_date) ?></dd>
+                <dd><?= Yii::$app->formatter->asDatetime($task->end_date) ?></dd>
             <?php endif; ?>
             <dt>Статус</dt>
             <dd><?= Html::encode($task->getStatusName()) ?></dd>

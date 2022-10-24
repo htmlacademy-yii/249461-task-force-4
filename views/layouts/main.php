@@ -33,15 +33,17 @@ $currentPage = Yii::$app->request->pathInfo;
             <?php if ($currentPage !== 'registration') : ?>
             <div class="nav-wrapper">
                 <ul class="nav-list">
-                    <li class="list-item list-item--active">
-                        <a href="/tasks" class="link link--nav" >Новое</a>
+                    <li class="list-item <?= $currentPage === 'tasks' ? 'list-item--active' : '' ?>">
+                        <a href="<?=Url::toRoute(['/tasks']); ?>" class="link link--nav" >Новое</a>
                     </li>
                     <li class="list-item">
                         <a href="#" class="link link--nav">Мои задания</a>
                     </li>
-                    <li class="list-item">
-                        <a href="#" class="link link--nav">Создать задание</a>
+                    <?php if (Yii::$app->user->identity->is_worker === 0) : ?>
+                    <li class="list-item <?= $currentPage === 'tasks/add' ? 'list-item--active' : '' ?>">
+                        <a href="<?=Url::toRoute(['/tasks/add']); ?>" class="link link--nav">Создать задание</a>
                     </li>
+                    <?php endif;?>
                     <li class="list-item">
                         <a href="#" class="link link--nav">Настройки</a>
                     </li>
@@ -73,7 +75,7 @@ $currentPage = Yii::$app->request->pathInfo;
         </div>
         <?php endif;?>
     </header>
-    <main class="main-content container">
+    <main class="main-content container <?= $currentPage === 'tasks/add' ? 'main-content--center' : '' ?>">
     <?= $content ?>
     </main>
 
