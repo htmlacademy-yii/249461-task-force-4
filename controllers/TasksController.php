@@ -5,13 +5,15 @@ namespace app\controllers;
 use app\models\Tasks;
 use Yii;
 use yii\web\Controller;
+use app\controllers\SecuredController;
 use yii\data\ActiveDataProvider;
 use yii\db\Expression;
 use app\models\forms\TasksFilterForm;
 
 use app\services\TasksListFilterService;
 
-class TasksController extends Controller
+class TasksController extends SecuredController
+//class TasksController extends Controller
 {
 
     private const TASKS_PER_PAGE = 5;

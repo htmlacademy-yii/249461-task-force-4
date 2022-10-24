@@ -15,14 +15,15 @@ use yii\web\AssetBundle;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class MainAsset extends AssetBundle
+class LandingAsset extends AssetBundle
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        'css/style.css',
+        'css/normalize.css',
+        'css/landing.css',
     ];
     public $js = [
-        'js/main.js',
+        'js/landing.js',
     ];
 }

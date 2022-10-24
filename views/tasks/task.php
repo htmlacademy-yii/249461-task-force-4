@@ -82,7 +82,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="right-card white file-card">
             <h4 class="head-card">Файлы задания</h4>
 
-            <?php /*var_dump($file);*/?>
             <ul class="enumeration-list">
                 <?php foreach ($task->taskFiles as $file) : ?>
                 <li class="enumeration-item">
