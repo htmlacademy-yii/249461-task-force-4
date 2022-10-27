@@ -36,3 +36,4 @@ phpunit.phar
 *.pdf
 *.psd
 *.sublime*
+web/uploads/*

@@ -3,8 +3,10 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use app\services\DateServices;
+use app\services\TaskCreateService;
 
 $dateServices = new DateServices();
+$taskCreateService = new TaskCreateService();
 
 
 $this->title = $task->title;
@@ -15,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="left-column">
     <div class="head-wrapper">
         <h3 class="head-main"><?= Html::encode($task->title) ?></h3>
-        <p class="price price--big"><?= Html::encode($task->price) ?> ₽</p>
+        <p class="price price--big"><?= $task->price ? Html::encode($task->price) . ' ₽' : 'Договорная' ?></p>
     </div>
     <p class="task-description"><?= Html::encode($task->description) ?></p>
     <a href="#" class="button button--blue action-btn" data-action="act_response">Откликнуться на задание</a>
@@ -81,15 +83,15 @@ $this->params['breadcrumbs'][] = $this->title;
             <dd><?= Html::encode($task->getStatusName()) ?></dd>
         </dl>
     </div>
-    <?php if (!empty($task->taskFiles)) : ?>
+    <?php if ($task->taskFiles) : ?>
         <div class="right-card white file-card">
             <h4 class="head-card">Файлы задания</h4>
 
             <ul class="enumeration-list">
                 <?php foreach ($task->taskFiles as $file) : ?>
                 <li class="enumeration-item">
-                    <a href="#" class="link link--block link--clip"><?=$file->path;?></a>
-                    <p class="file-size">356 Кб</p>
+                    <a href="<?=$file->path;?>" download="<?=$file->name;?>" class="link link--block link--clip"><?=$file->name;?></a>
+                    <p class="file-size"><?=$taskCreateService->fileSize($file->path)?></p>
                 </li>
                 <?php endforeach; ?>
             </ul>

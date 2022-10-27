@@ -3,13 +3,16 @@
 namespace app\controllers;
 
 use app\models\Tasks;
+use app\services\TaskCreateService;
 use Yii;
 use app\controllers\SecuredController;
 use yii\filters\AccessControl;
 use yii\data\ActiveDataProvider;
 use app\models\forms\TasksFilterForm;
+use yii\web\UploadedFile;
 use yii\widgets\ActiveForm;
 use yii\web\Response;
+use yii\helpers\Url;
 
 use app\services\TasksListFilterService;
 
@@ -78,15 +81,22 @@ class TasksController extends SecuredController
 
         if (Yii::$app->request->getIsPost()) {
             $newTask->load(Yii::$app->request->post());
+            $newTask->author_id = Yii::$app->user->identity->id;
 
             if (Yii::$app->request->isAjax && $newTask->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($newTask);
             }
 
-            if (!$newTask->hasErrors()) {
-                $newTask->author_id = Yii::$app->user->identity->id;
+            if ($newTask->validate()) {
+
+                $newTask->taskFilesList = UploadedFile::getInstances($newTask, 'taskFiles');
+
                 $newTask->save(false);
+
+                $taskCreateServices = new TaskCreateService();
+
+                $taskCreateServices->saveFiles($taskCreateServices->uploadFiles($newTask->taskFilesList), $newTask->id);
 
                 return $this->redirect('/tasks/view?id=' . $newTask->id);
             }

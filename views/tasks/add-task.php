@@ -15,6 +15,7 @@ $categories_list = Categories::find()->asArray()->all();
         'enableAjaxValidation' => true,
         'fieldConfig' => [
             'labelOptions' => ['class' => 'control-label'],
+            'errorOptions' => ['tag' => 'span', 'class' => 'help-block'],
         ],
     ]) ?>
     <h3 class="head-main head-main">Публикация нового задания</h3>
@@ -26,10 +27,7 @@ $categories_list = Categories::find()->asArray()->all();
         <?= $form->field($newTask, 'price')->textInput(array('class'=>'budget-icon'))->error(['tag' => 'span']); ?>
         <?= $form->field($newTask, 'end_date')->textInput(array('type'=>'date','class'=>'period-execution'))->error(['tag' => 'span']); ?>
     </div>
-    <p class="form-label">Файлы</p>
-    <div class="new-file">
-        Добавить новый файл
-    </div>
+    <?= $form->field($newTask, 'taskFiles[]')->fileInput(['multiple' => true]); ?>
     <input type="submit" class="button button--blue" value="Опубликовать">
     <?php $form = ActiveForm::end() ?>
 </div>
