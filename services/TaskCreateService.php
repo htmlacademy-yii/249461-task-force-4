@@ -10,7 +10,7 @@ class TaskCreateService
     /**
      * @var string Путь к папке для загрузки файлов к таскам
      */
-    private $basePath = 'uploads/';
+    private $basePath = 'uploads';
 
     /**
      * @param $filesList array Загруженные файлы из формы
@@ -23,7 +23,11 @@ class TaskCreateService
             $fileName = $file->name;
             $fileServerName = uniqid($file->baseName). '.' . $file->extension;
 
-            $file->saveAs($this->basePath . $fileServerName);
+            if (!is_dir($this->basePath)) {
+                mkdir($this->basePath);
+            }
+
+            $file->saveAs($this->basePath . '/' . $fileServerName);
 
             $uploadFiles[$key] = ['name' => $fileName, 'path' =>  $fileServerName];
         }
@@ -55,7 +59,7 @@ class TaskCreateService
      */
     public function fileSize(string $fileName): ?string
     {
-        $size = filesize(Yii::getAlias('@web'). $this->basePath . $fileName);
+        $size = filesize(Yii::getAlias('@web'). $this->basePath . '/' . $fileName);
         return Yii::$app->formatter->asShortSize($size);
     }
 }
