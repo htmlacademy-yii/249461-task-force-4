@@ -95,8 +95,7 @@ class TasksController extends SecuredController
                 $newTask->save(false);
 
                 $taskCreateServices = new TaskCreateService();
-
-                $taskCreateServices->saveFiles($taskCreateServices->uploadFiles($newTask->taskFilesList), $newTask->id);
+                $taskCreateServices->saveUploadFiles($newTask->taskFilesList, $newTask->id);
 
                 return $this->redirect('/tasks/view?id=' . $newTask->id);
             }

@@ -16,7 +16,7 @@ class TaskCreateService
      * @param $filesList array Загруженные файлы из формы
      * @return array С файлами уникальное серверное имя + имя файла
      */
-    public function uploadFiles(array $filesList) {
+    private function serviceUploadFiles(array $filesList) {
         $uploadFiles = [];
 
         foreach ($filesList as $key => $file) {
@@ -41,7 +41,7 @@ class TaskCreateService
      * @param int $taskId id таска
      * @return void
      */
-    public function saveFiles(array $files, int $taskId)
+    private function serviceSaveFiles(array $files, int $taskId)
     {
         foreach ($files as $file) {
             $taskFile = new TaskFiles();
@@ -52,12 +52,16 @@ class TaskCreateService
         }
     }
 
+    public function saveUploadFiles($filesList, $task_id) {
+        return $this->serviceSaveFiles($this->serviceUploadFiles($filesList), $task_id);
+    }
+
     /**
      * Функция форматирует размер файла нужный формат
      * @param $fileName string имя файла на сервере.
      * @return string|null
      */
-    public function fileSize(string $fileName): ?string
+    public function showFileSize(string $fileName): ?string
     {
         $size = filesize(Yii::getAlias('@web'). $this->basePath . '/' . $fileName);
         return Yii::$app->formatter->asShortSize($size);

@@ -27,7 +27,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php if (!empty($task->address)) : ?>
     <div class="task-map">
         <img class="map" src="../img/map.png" width="725" height="346" alt="<?= Html::encode($task->address) ?>">
-        <p class="map-address town"><?= Html::encode($task->city->name) ?></p>
+        <?php if (!empty($task->city->name)) : ?>
+            <p class="map-address town"><?= Html::encode($task->city->name) ?></p>
+        <?php endif; ?>
         <p class="map-address"><?= Html::encode($task->address) ?></p>
     </div>
     <?php endif; ?>
@@ -91,7 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php foreach ($task->taskFiles as $file) : ?>
                 <li class="enumeration-item">
                     <a href="<?=$file->path;?>" download="<?=$file->name;?>" class="link link--block link--clip"><?=$file->name;?></a>
-                    <p class="file-size"><?=$taskCreateService->fileSize($file->path)?></p>
+                    <p class="file-size"><?=$taskCreateService->showFileSize($file->path)?></p>
                 </li>
                 <?php endforeach; ?>
             </ul>
