@@ -3,8 +3,10 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use app\services\DateServices;
+use app\services\TaskCreateService;
 
 $dateServices = new DateServices();
+$taskCreateService = new TaskCreateService();
 
 
 $this->title = $task->title;
@@ -15,17 +17,22 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="left-column">
     <div class="head-wrapper">
         <h3 class="head-main"><?= Html::encode($task->title) ?></h3>
-        <p class="price price--big"><?= Html::encode($task->price) ?> ₽</p>
+        <p class="price price--big"><?= $task->price ? Html::encode($task->price) . ' ₽' : 'Договорная' ?></p>
     </div>
     <p class="task-description"><?= Html::encode($task->description) ?></p>
     <a href="#" class="button button--blue action-btn" data-action="act_response">Откликнуться на задание</a>
     <a href="#" class="button button--orange action-btn" data-action="refusal">Отказаться от задания</a>
     <a href="#" class="button button--pink action-btn" data-action="completion">Завершить задание</a>
+
+    <?php if (!empty($task->address)) : ?>
     <div class="task-map">
         <img class="map" src="../img/map.png" width="725" height="346" alt="<?= Html::encode($task->address) ?>">
-        <p class="map-address town"><?= Html::encode($task->city->name) ?></p>
+        <?php if (!empty($task->city->name)) : ?>
+            <p class="map-address town"><?= Html::encode($task->city->name) ?></p>
+        <?php endif; ?>
         <p class="map-address"><?= Html::encode($task->address) ?></p>
     </div>
+    <?php endif; ?>
     <h4 class="head-regular">Отклики на задание</h4>
     <?php if (!!$task->responses) : ?>
         <?php foreach ($task->responses as $responce) : ?>
@@ -72,21 +79,21 @@ $this->params['breadcrumbs'][] = $this->title;
             <dd><?= $dateServices->elapsed_time($task->add_date) ?></dd>
             <?php if ($task->end_date): ?>
                 <dt>Срок выполнения</dt>
-                <dd><?= Html::encode($task->end_date) ?></dd>
+                <dd><?= Yii::$app->formatter->asDatetime($task->end_date) ?></dd>
             <?php endif; ?>
             <dt>Статус</dt>
             <dd><?= Html::encode($task->getStatusName()) ?></dd>
         </dl>
     </div>
-    <?php if (!empty($task->taskFiles)) : ?>
+    <?php if ($task->taskFiles) : ?>
         <div class="right-card white file-card">
             <h4 class="head-card">Файлы задания</h4>
 
             <ul class="enumeration-list">
                 <?php foreach ($task->taskFiles as $file) : ?>
                 <li class="enumeration-item">
-                    <a href="#" class="link link--block link--clip"><?=$file->path;?></a>
-                    <p class="file-size">356 Кб</p>
+                    <a href="<?=$file->path;?>" download="<?=$file->name;?>" class="link link--block link--clip"><?=$file->name;?></a>
+                    <p class="file-size"><?=$taskCreateService->showFileSize($file->path)?></p>
                 </li>
                 <?php endforeach; ?>
             </ul>

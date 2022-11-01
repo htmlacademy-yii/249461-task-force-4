@@ -27,6 +27,7 @@ $config = [
         'user' => [
             'identityClass' => 'app\models\Users',
             'enableAutoLogin' => true,
+            'loginUrl' => ['/']
         ],
         'errorHandler' => [
             'errorAction' => 'landing/error',
@@ -53,11 +54,13 @@ $config = [
             'enableStrictParsing' => false,
             'rules' => [
                 'tasks' => 'tasks/index',
+                'tasks/view/<id:\d+>' => 'tasks/view',
+                'user/view/<id:\d+>' => 'user/profile',
             ],
         ],
         'formatter' => [
             'locale' => 'ru-RU',
-            'datetimeFormat'=> 'dd MMMM Y HH:mm',
+            'datetimeFormat'=> 'dd MMMM Y, HH:mm',
             'dateFormat' => 'dd MMMM Y',
         ],
     ],

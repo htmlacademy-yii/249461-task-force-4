@@ -56,8 +56,11 @@ class Tasks extends \yii\db\ActiveRecord
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::class, 'targetAttribute' => ['category_id' => 'id']],
             [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::class, 'targetAttribute' => ['city_id' => 'id']],
             [['worker_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['worker_id' => 'id']],
+            [['taskFilesList'], 'file', 'skipOnEmpty' => true, 'maxFiles' => 0],
         ];
     }
+
+
 
     /**
      * {@inheritdoc}
@@ -67,20 +70,26 @@ class Tasks extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'add_date' => 'Add Date',
-            'title' => 'Title',
-            'description' => 'Description',
-            'category_id' => 'Category ID',
-            'price' => 'Price',
-            'end_date' => 'End Date',
+            'title' => 'Опишите суть работы',
+            'description' => 'Подробности задания',
+            'category_id' => 'Категория',
+            'price' => 'Бюджет',
+            'end_date' => 'Срок исполнения',
             'author_id' => 'Author ID',
             'worker_id' => 'Worker ID',
             'status' => 'Status',
-            'address' => 'Address',
+            'address' => 'Локация',
             'city_id' => 'City ID',
             'lat' => 'Lat',
             'lng' => 'Lng',
+            'taskFilesList' => 'Файлы'
         ];
     }
+
+    /**
+     * @var Файлы задачи
+     */
+    public $taskFilesList;
 
     /**
      * Gets query for [[Author]].

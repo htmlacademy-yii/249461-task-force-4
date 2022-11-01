@@ -10,6 +10,7 @@ use Yii;
  * @property int $id
  * @property int $task_id
  * @property string $path
+ * @property string $name
  *
  * @property Tasks $task
  */
@@ -32,6 +33,7 @@ class TaskFiles extends \yii\db\ActiveRecord
             [['task_id', 'path'], 'required'],
             [['task_id'], 'integer'],
             [['path'], 'string', 'max' => 512],
+            [['name'], 'string', 'max' => 255],
             [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::class, 'targetAttribute' => ['task_id' => 'id']],
         ];
     }
@@ -45,6 +47,7 @@ class TaskFiles extends \yii\db\ActiveRecord
             'id' => 'ID',
             'task_id' => 'Task ID',
             'path' => 'Path',
+            'name' => 'File',
         ];
     }
 
