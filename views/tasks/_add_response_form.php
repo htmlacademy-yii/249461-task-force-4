@@ -14,6 +14,7 @@ use yii\widgets\ActiveForm;
         <div class="addition-form pop-up--form regular-form">
             <?php $form = ActiveForm::begin([
                 'enableAjaxValidation' => true,
+                'action' => ['tasks/respond', 'id' => $task->id],
                 'fieldConfig' => [
                     'labelOptions' => ['class' => 'control-label'],
                     'errorOptions' => ['tag' => 'span', 'class' => 'help-block'],

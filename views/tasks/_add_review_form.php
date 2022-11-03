@@ -15,6 +15,7 @@ use yii\widgets\ActiveForm;
             <?php $form = ActiveForm::begin([
                 'enableAjaxValidation' => true,
                 'id' => $newReview->formName(),
+                'action' => ['tasks/review', 'id' => $task->id],
                 'fieldConfig' => [
                     'labelOptions' => ['class' => 'control-label'],
                     'errorOptions' => ['tag' => 'span', 'class' => 'help-block'],
@@ -28,7 +29,7 @@ use yii\widgets\ActiveForm;
             </div>
             <?= $form->field($newReview, 'mark',['template' => '{input}{error}',])->hiddenInput(); ?>
 
-            <input type="submit" class="button button--pop-up button--blue" value="Откликнуться">
+            <input type="submit" class="button button--pop-up button--blue" value="Завершить">
 
             <?php $form = ActiveForm::end() ?>
         </div>

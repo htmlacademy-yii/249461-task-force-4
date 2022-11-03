@@ -30,7 +30,7 @@ class TaskCreateService
 
             $file->saveAs($this->basePath . '/' . $fileServerName);
 
-            $uploadFiles[$key] = ['name' => $fileName, 'path' =>  $fileServerName];
+            $uploadFiles[$key] = ['name' => $fileName, 'path' => $this->basePath . '/' . $fileServerName];
         }
 
         return $uploadFiles;
@@ -80,7 +80,7 @@ class TaskCreateService
      */
     public function showFileSize(string $fileName): ?string
     {
-        $size = filesize(Yii::getAlias('@web'). $this->basePath . '/' . $fileName);
+        $size = filesize(Yii::getAlias('@web'). $fileName);
         return Yii::$app->formatter->asShortSize($size);
     }
 }

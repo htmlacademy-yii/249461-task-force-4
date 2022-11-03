@@ -18,25 +18,6 @@ $current_user = Yii::$app->user->identity;
 $this->title = $task->title;
 $this->params['breadcrumbs'][] = $this->title;
 
-function renderStarRating($rating, $starsSize = 'small') {
-    $max_raiting = 5;
-    $emptyStars = $max_raiting - $rating;
-
-    $showStars = '';
-
-    for ($i = 1; $i<=$rating; $i++) {
-        $showStars .= '<span class="fill-star">&nbsp;</span>';
-    }
-
-    if ($emptyStars > 0) {
-        for ($i = 1; $i<=$emptyStars; $i++) {
-            $showStars .= '<span>&nbsp;</span>';
-        }
-    }
-
-    echo "<div class='stars-rating ${starsSize}'>${showStars}</div>";
-}
-
 ?>
 
 <div class="left-column">
@@ -71,28 +52,28 @@ function renderStarRating($rating, $starsSize = 'small') {
     <?php endif; ?>
     <h4 class="head-regular">Отклики на задание</h4>
     <?php if (!!$task->responses) : ?>
-        <?php foreach ($task->responses as $responce) : ?>
-            <div class="response-card <?= $responce->rejected===1 ? 'response-card--rejected' : ''?>">
-                <img class="customer-photo" src="/<?= $responce->user->avatar ?>" width="146" height="156"
+        <?php foreach ($task->responses as $response) : ?>
+            <div class="response-card <?= $response->rejected===1 ? 'response-card--rejected' : ''?>">
+                <img class="customer-photo" src="/<?= $response->user->avatar ?>" width="146" height="156"
                      alt="Фото заказчиков">
                 <div class="feedback-wrapper">
-                    <a href="<?=Url::toRoute(['users/view/','id' => $responce->user->id]); ?>" class="link link--block link--big"><?= Html::encode($responce->user->name) ?></a>
+                    <a href="<?=Url::toRoute(['users/view/','id' => $response->user->id]); ?>" class="link link--block link--big"><?= Html::encode($response->user->name) ?></a>
                     <div class="response-wrapper">
-                        <?php $userServices->renderStarRating($responce->user->rating); ?>
-                        <p class="reviews"><?= count($responce->user->workerReviews) ?> отзыва</p>
+                        <?php $userServices->renderStarRating($response->user->rating); ?>
+                        <p class="reviews"><?= count($response->user->workerReviews) ?> отзыва</p>
                     </div>
                     <p class="response-message">
-                        <?= Html::encode($responce->comment) ?>
+                        <?= Html::encode($response->comment) ?>
                     </p>
                 </div>
                 <div class="feedback-wrapper">
-                    <p class="info-text"><span class="current-time"><?= $dateServices->elapsed_time($responce->add_date) ?></p>
-                    <p class="price price--small"><?= Html::encode($responce->price) ?> ₽</p>
+                    <p class="info-text"><span class="current-time"><?= $dateServices->elapsed_time($response->add_date) ?></p>
+                    <p class="price price--small"><?= Html::encode($response->price) ?> ₽</p>
                 </div>
-                <?php if ($task->status == Tasks::STATUS_NEW && $taskViewServices->checkTaskAuthor($task, $current_user) && $responce->rejected!==1):?>
+                <?php if ($task->status == Tasks::STATUS_NEW && $taskViewServices->checkTaskAuthor($task, $current_user) && $response->rejected!==1):?>
                 <div class="button-popup">
-                    <a href="<?= Url::to(['tasks/start/', 'id' => $task->id, 'worker_id' => $responce->user_id]); ?>" class="button button--blue button--small">Принять</a>
-                    <a href="<?= Url::to(['tasks/reject/', 'id' => $responce->id]); ?>" class="button button--orange button--small">Отказать</a>
+                    <a href="<?= Url::to(['tasks/start/', 'id' => $task->id, 'worker_id' => $response->user_id]); ?>" class="button button--blue button--small">Принять</a>
+                    <a href="<?= Url::to(['tasks/reject/', 'response_id' => $response->id, 'task_id'=>$response->task_id]); ?>" class="button button--orange button--small">Отказать</a>
                 </div>
                 <?php endif; ?>
             </div>
@@ -123,10 +104,12 @@ function renderStarRating($rating, $starsSize = 'small') {
 
             <ul class="enumeration-list">
                 <?php foreach ($task->taskFiles as $file) : ?>
-                <li class="enumeration-item">
-                    <a href="<?=$file->path;?>" download="<?=$file->name;?>" class="link link--block link--clip"><?=$file->name;?></a>
-                    <p class="file-size"><?=$taskCreateService->showFileSize($file->path)?></p>
-                </li>
+                    <?php if(file_exists($file->path)):?>
+                        <li class="enumeration-item">
+                            <a href="<?=$file->path;?>" download="<?=$file->name;?>" class="link link--block link--clip"><?=$file->name;?></a>
+                            <p class="file-size"><?=$taskCreateService->showFileSize($file->path)?></p>
+                        </li>
+                    <?php endif; ?>
                 <?php endforeach; ?>
             </ul>
         </div>
@@ -140,12 +123,12 @@ function renderStarRating($rating, $starsSize = 'small') {
             Вы собираетесь отказаться от выполнения этого задания.<br>
             Это действие плохо скажется на вашем рейтинге и увеличит счетчик проваленных заданий.
         </p>
-        <a href="<?= Url::to(['tasks/refuse/', 'id' => $task->id, 'worker_id' => $task->worker_id]); ?>" class="button button--pop-up button--orange">Отказаться</a>
+        <a href="<?= Url::to(['tasks/refuse/', 'id' => $task->id]); ?>" class="button button--pop-up button--orange">Отказаться</a>
         <div class="button-container">
             <button class="button--close" type="button">Закрыть окно</button>
         </div>
     </div>
 </section>
-<?= $this->render('_add_review_form', ['newReview' => $newReview]) ?>
-<?= $this->render('_add_response_form', ['newResponse' => $newResponse]) ?>
+<?= $this->render('_add_response_form', ['task' =>$task, 'newResponse' => $newResponse]) ?>
+<?= $this->render('_add_review_form', ['task' =>$task, 'newReview' => $newReview]) ?>
 <div class="overlay"></div>
