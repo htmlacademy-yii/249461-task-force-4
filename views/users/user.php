@@ -3,21 +3,22 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use app\services\DateServices;
+use app\services\UserServices;
 
 $dateServices = new DateServices();
+$userServices = new UserServices();
 
 $this->title = $user->name;
 $this->params['breadcrumbs'][] = $this->title;
-
 
 ?>
 <div class="left-column">
     <h3 class="head-main"><?= Html::encode($user->name) ?></h3>
     <div class="user-card">
         <div class="photo-rate">
-            <img class="card-photo" src="/<?= Html::encode($user->avatar) ?>" width="191" height="190" alt="Фото пользователя">
+            <img class="card-photo" src="/<?= $user->avatar ?>" width="191" height="190" alt="Фото пользователя">
             <div class="card-rate">
-                <div class="stars-rating big"><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span>&nbsp;</span></div>
+                <?php $userServices->renderStarRating($user->rating, 'big'); ?>
                 <span class="current-rate"><?= Html::encode($user->rating) ?></span>
             </div>
         </div>
@@ -53,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <p class="task">Задание «<a href="<?=Url::toRoute(['tasks/view/','id' => $userReview->task->id]); ?>" class="link link--small"><?= Html::encode($userReview->task->title) ?></a>» выполнено</p>
             </div>
             <div class="feedback-wrapper">
-                <div class="stars-rating small"><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span>&nbsp;</span></div>
+                <?php $userServices->renderStarRating($userReview->mark, ); ?>
                 <p class="info-text"><span class="current-time"><?= $dateServices->elapsed_time($userReview->add_date) ?></p>
             </div>
         </div>

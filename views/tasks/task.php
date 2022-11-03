@@ -7,14 +7,35 @@ use app\services\TaskCreateService;
 use app\models\Tasks;
 use app\models\Users;
 use app\services\TaskViewServices;
+use app\services\UserServices;
 
 $dateServices = new DateServices();
 $taskCreateService = new TaskCreateService();
 $taskViewServices = new TaskViewServices;
+$userServices = new UserServices();
 $current_user = Yii::$app->user->identity;
 
 $this->title = $task->title;
 $this->params['breadcrumbs'][] = $this->title;
+
+function renderStarRating($rating, $starsSize = 'small') {
+    $max_raiting = 5;
+    $emptyStars = $max_raiting - $rating;
+
+    $showStars = '';
+
+    for ($i = 1; $i<=$rating; $i++) {
+        $showStars .= '<span class="fill-star">&nbsp;</span>';
+    }
+
+    if ($emptyStars > 0) {
+        for ($i = 1; $i<=$emptyStars; $i++) {
+            $showStars .= '<span>&nbsp;</span>';
+        }
+    }
+
+    echo "<div class='stars-rating ${starsSize}'>${showStars}</div>";
+}
 
 ?>
 
@@ -57,13 +78,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="feedback-wrapper">
                     <a href="<?=Url::toRoute(['users/view/','id' => $responce->user->id]); ?>" class="link link--block link--big"><?= Html::encode($responce->user->name) ?></a>
                     <div class="response-wrapper">
-                        <div class="stars-rating small">
-                            <span class="fill-star">&nbsp;</span>
-                            <span class="fill-star">&nbsp;</span>
-                            <span class="fill-star">&nbsp;</span>
-                            <span class="fill-star">&nbsp;</span>
-                            <span>&nbsp;</span>
-                        </div>
+                        <?php $userServices->renderStarRating($responce->user->rating); ?>
                         <p class="reviews"><?= count($responce->user->workerReviews) ?> отзыва</p>
                     </div>
                     <p class="response-message">
@@ -131,31 +146,6 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </section>
-<!--<section class="pop-up pop-up--completion pop-up--close">
-    <div class="pop-up--wrapper">
-        <h4>Завершение задания</h4>
-        <p class="pop-up-text">
-            Вы собираетесь отметить это задание как выполненное.
-            Пожалуйста, оставьте отзыв об исполнителе и отметьте отдельно, если возникли проблемы.
-        </p>
-        <div class="completion-form pop-up--form regular-form">
-            <form>
-                <div class="form-group">
-                    <label class="control-label" for="completion-comment">Ваш комментарий</label>
-                    <textarea id="completion-comment"></textarea>
-                </div>
-                <p class="completion-head control-label">Оценка работы</p>
-                <div class="stars-rating big active-stars">
-                    <span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span>
-                </div>
-                <input type="submit" class="button button--pop-up button--blue" value="Завершить">
-            </form>
-        </div>
-        <div class="button-container">
-            <button class="button--close" type="button">Закрыть окно</button>
-        </div>
-    </div>
-</section>-->
 <?= $this->render('_add_review_form', ['newReview' => $newReview]) ?>
 <?= $this->render('_add_response_form', ['newResponse' => $newResponse]) ?>
 <div class="overlay"></div>
