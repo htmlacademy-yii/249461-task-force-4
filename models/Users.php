@@ -76,7 +76,6 @@ class Users extends ActiveRecord implements IdentityInterface
             'name' => 'Ваше имя',
             'email' => 'Email',
             'password' => 'Пароль',
-            'password_retype' => 'Повтор пароля',
             'is_worker' => 'я собираюсь откликаться на заказы',
             'avatar' => 'Аватар',
             'birthday' => 'День рождения',
@@ -90,8 +89,6 @@ class Users extends ActiveRecord implements IdentityInterface
             'rating' => 'Рейтинг',
         ];
     }
-
-    public $password_retype;
 
     /**
      * Gets query for [[City]].

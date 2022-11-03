@@ -2,9 +2,12 @@
 
 namespace app\controllers;
 
-use app\models\Users;
+use app\models\forms\Registration;
 use yii\web\Controller;
 use yii\filters\AccessControl;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
+use app\services\RegistrationService;
 use Yii;
 
 class RegistrationController extends Controller
@@ -27,15 +30,21 @@ class RegistrationController extends Controller
     }
 
     public function actionIndex() {
-        $newUser = new Users();
+        $newUser = new Registration();
 
         if (Yii::$app->request->getIsPost()) {
             $newUser->load(Yii::$app->request->post());
 
-            if ($newUser->validate()) {
-                $newUser->password = Yii::$app->security->generatePasswordHash($newUser->password);
+            if (Yii::$app->request->isAjax && $newUser->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return ActiveForm::validate($newUser);
+            }
 
-                $newUser->save(false);
+            if ($newUser->validate()){
+
+                $registrationService = new RegistrationService();
+                $registrationService->saveNewUser($newUser);
+
                 $this->goHome();
             }
         }

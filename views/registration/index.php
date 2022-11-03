@@ -18,6 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="registration-form regular-form">
         <?php $form = ActiveForm::begin([
             'id' => 'signup-form',
+            'enableAjaxValidation' => true,
             'fieldConfig' => [
                 'inputOptions' => ['class' => null],
                 'labelOptions' => ['class' => 'control-label'],
@@ -38,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <div class="half-wrapper">
 
-            <?= $form->field($newUser, 'password_retype')->passwordInput() ?>
+            <?= $form->field($newUser, 'password_repeat')->passwordInput() ?>
         </div>
         <?= $form->field($newUser, 'is_worker')->checkbox(); ?>
         <input type="submit" class="button button--blue" value="Создать аккаунт">
