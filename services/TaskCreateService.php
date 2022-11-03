@@ -2,6 +2,7 @@
 
 namespace app\services;
 
+use app\models\Tasks;
 use Yii;
 use app\models\TaskFiles;
 
@@ -50,6 +51,22 @@ class TaskCreateService
             $taskFile->name = $file['name'];
             $taskFile->save();
         }
+    }
+
+    /*
+     * Сохранение новой задачи в БД
+     * */
+    public function saveNewTask($newTask) {
+        $task = new Tasks();
+        $task->title = $newTask->title;
+        $task->description = $newTask->description;
+        $task->category_id = $newTask->category_id;
+        $task->author_id = Yii::$app->user->identity->id;
+        $task->price = $newTask->price;
+        $task->end_date = $newTask->end_date;
+        $task->address = $newTask->address;
+
+        $task->save(false);
     }
 
     public function saveUploadFiles($filesList, $task_id) {

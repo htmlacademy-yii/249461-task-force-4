@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\forms\AddNewTask;
 use app\models\forms\AddResponseForm;
 use app\models\forms\AddReviewForm;
 use app\models\Responses;
@@ -118,11 +119,10 @@ class TasksController extends SecuredController
      * */
     public function actionAdd()
     {
-        $newTask = new Tasks();
+        $newTask = new AddNewTask();
 
         if (Yii::$app->request->getIsPost()) {
             $newTask->load(Yii::$app->request->post());
-            $newTask->author_id = Yii::$app->user->identity->id;
 
             if (Yii::$app->request->isAjax && $newTask->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -130,19 +130,19 @@ class TasksController extends SecuredController
             }
 
             if ($newTask->validate()) {
-
-                $newTask->taskFilesList = UploadedFile::getInstances($newTask, 'taskFiles');
-
-                $newTask->save(false);
+                $newTask->taskFiles = UploadedFile::getInstances($newTask, 'taskFiles');
 
                 $taskCreateServices = new TaskCreateService();
-                $taskCreateServices->saveUploadFiles($newTask->taskFilesList, $newTask->id);
+                /* Сохранение таска */
+                $taskCreateServices->saveNewTask($newTask);
+                /* Сохранение файлов таска */
+                $taskCreateServices->saveUploadFiles($newTask->taskFiles, $task->id);
 
-                return $this->redirect('/tasks/view?id=' . $newTask->id);
+                return $this->redirect('/tasks/view?id=' . $task->id);
             }
         }
 
-        return $this->render('add-task', ['newTask' => $newTask]);
+        return $this->render('add_task', ['newTask' => $newTask]);
     }
 
     /**
