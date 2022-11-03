@@ -21,6 +21,6 @@ $dateServices = new DateServices();
             <p class="info-text town-text"><?= Html::encode($model->city->name) ?></p>
         <?php endif; ?>
         <p class="info-text category-text"><?= Html::encode($model->category->name) ?></p>
-        <a href="#" class="button button--black">Смотреть Задание</a>
+        <a href="<?= Url::toRoute(['tasks/view/', 'id' => $model->id]); ?>" class="button button--black">Смотреть Задание</a>
     </div>
 </div>

@@ -191,4 +191,14 @@ class Users extends ActiveRecord implements IdentityInterface
     {
         // TODO: Implement validateAuthKey() method.
     }
+
+    const ROLE_AUTHOR = 0;
+    const ROLE_WORKER = 1;
+
+    static function checkIsWorker($user) {
+        return $user->is_worker === self::ROLE_WORKER;
+    }
+    static function checkIsClient($user) {
+        return $user->is_worker === self::ROLE_AUTHOR;
+    }
 }

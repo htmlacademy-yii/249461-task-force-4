@@ -38,6 +38,6 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 <div class="right-column">
     <div class="right-card black">
-        <?= $this->render('_taskslist_filter', ['tasksFilterForm' =>$tasksFilterForm]) ?>
+        <?= $this->render('_taskslist_filter', ['tasksFilterForm' => $tasksFilterForm]) ?>
     </div>
 </div>
