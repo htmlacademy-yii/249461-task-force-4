@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\forms\UserRegistration;
 use app\controllers\SecuredController;
 use app\models\Users;
+use yii\web\NotFoundHttpException;
 
 class UsersController  extends SecuredController
 {

@@ -5,9 +5,7 @@ namespace app\controllers;
 use app\models\forms\AddNewTask;
 use app\models\forms\AddResponseForm;
 use app\models\forms\AddReviewForm;
-use app\models\Responses;
 use app\models\Tasks;
-use app\models\Users;
 use app\services\task\TaskActionCancel;
 use app\services\task\TaskActionRefuse;
 use app\services\task\TaskActionReject;
@@ -15,16 +13,14 @@ use app\services\task\TaskActionRespond;
 use app\services\task\TaskActionReview;
 use app\services\task\TaskActionStart;
 use app\services\TaskCreateService;
-use Yii;
 use app\controllers\SecuredController;
-use yii\filters\AccessControl;
-use yii\data\ActiveDataProvider;
 use app\models\forms\TasksFilterForm;
+use Yii;
+use yii\data\ActiveDataProvider;
 use yii\web\UploadedFile;
 use yii\widgets\ActiveForm;
 use yii\web\Response;
-use yii\helpers\Url;
-use app\services\TaskViewServices;
+use yii\web\NotFoundHttpException;
 
 use app\services\TasksListFilterService;
 
@@ -148,11 +144,11 @@ class TasksController extends SecuredController
             if ($newResponse->validate()){
 
                 /* Сервисный класс отклика */
-                $actionRespond = new TaskActionRespond();
+                $respond = new TaskActionRespond();
 
                 /* Проверка прав пользователя через сервисный класс */
-                if ($actionRespond->checkAvailable($task, Yii::$app->user->identity->id)) {
-                    $actionRespond->execute($task->id, $newResponse, Yii::$app->user->identity->id);
+                if ($respond->checkAvailable($task, Yii::$app->user->identity->id)) {
+                    $respond->execute($task->id, $newResponse, Yii::$app->user->identity->id);
 
                     return $this->redirect(['tasks/view/', 'id' => $task->id]);
                 }

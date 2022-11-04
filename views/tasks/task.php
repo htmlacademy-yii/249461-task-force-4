@@ -18,6 +18,10 @@ $current_user = Yii::$app->user->identity;
 $this->title = $task->title;
 $this->params['breadcrumbs'][] = $this->title;
 
+function countUserReviews($reviews, $dateServices) {
+    return count($reviews) . '&nbsp;' . $dateServices->get_noun_plural_form(count($reviews), 'отзыв', 'отзыва', 'отзывов');
+}
+
 ?>
 
 <div class="left-column">
@@ -60,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <a href="<?=Url::toRoute(['users/view/','id' => $response->user->id]); ?>" class="link link--block link--big"><?= Html::encode($response->user->name) ?></a>
                     <div class="response-wrapper">
                         <?php $userServices->renderStarRating($response->user->rating); ?>
-                        <p class="reviews"><?= count($response->user->workerReviews) ?> отзыва</p>
+                        <p class="reviews"><?= countUserReviews($response->user->workerReviews, $dateServices) ?></p>
                     </div>
                     <p class="response-message">
                         <?= Html::encode($response->comment) ?>
@@ -108,6 +112,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         <li class="enumeration-item">
                             <a href="<?=$file->path;?>" download="<?=$file->name;?>" class="link link--block link--clip"><?=$file->name;?></a>
                             <p class="file-size"><?=$taskCreateService->showFileSize($file->path)?></p>
+                        </li>
+                    <?php else: ?>
+                        <li class="enumeration-item">
+                            Файл <b><?=$file->name;?></b> не найден или удален с сервера
                         </li>
                     <?php endif; ?>
                 <?php endforeach; ?>

@@ -16,12 +16,13 @@ class TaskActionReview extends TaskAbstractAction
     /**
      * @inheritDoc
      */
-    function checkAvailable($task, ?int $currentUser) :bool
+    function checkAvailable($task, ?int $currentUser): bool
     {
         return $currentUser === $task->author_id && $task->status === Tasks::STATUS_PROGRESS;
     }
 
-    public function execute($task, $newReview) {
+    public function execute($task, $newReview)
+    {
         /*Новый отзыв*/
         $review = new Reviews();
         $review->task_id = $task->id;
@@ -39,10 +40,30 @@ class TaskActionReview extends TaskAbstractAction
 
         $transaction = Yii::$app->db->beginTransaction();
 
-        if ($review->save() && $task->update() && $worker->update()) {
-            $transaction->commit();
+        if ($review->save() && $task->update()) {
+            $worker->rating = $this->countRating($task->worker_id);
+            if ($worker->update()) {
+                $transaction->commit();
+            }
         } else {
             $transaction->rollBack();
         }
+    }
+
+    /*
+     * Пересчет рейтинга пользователя после добавления нового отзыва с новой оценкой
+     */
+    private function countRating($id)
+    {
+        $reviews = Reviews::find()->where(['worker_id' => $id])->all();
+        $rating = 0;
+
+        foreach ($reviews as $review) {
+            $rating += $review['mark'];
+        }
+
+        $rating = round($rating / count($reviews), 2);
+
+        return $rating;
     }
 }
