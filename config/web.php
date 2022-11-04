@@ -30,7 +30,7 @@ $config = [
             'loginUrl' => ['/']
         ],
         'errorHandler' => [
-            'errorAction' => 'landing/error',
+            'errorAction' => 'error/error',
         ],
         'mailer' => [
             'class' => \yii\symfonymailer\Mailer::class,

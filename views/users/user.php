@@ -3,21 +3,22 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use app\services\DateServices;
+use app\services\UserServices;
 
 $dateServices = new DateServices();
+$userServices = new UserServices();
 
 $this->title = $user->name;
 $this->params['breadcrumbs'][] = $this->title;
-
 
 ?>
 <div class="left-column">
     <h3 class="head-main"><?= Html::encode($user->name) ?></h3>
     <div class="user-card">
         <div class="photo-rate">
-            <img class="card-photo" src="/<?= Html::encode($user->avatar) ?>" width="191" height="190" alt="Фото пользователя">
+            <img class="card-photo" src="/<?= $user->avatar ?>" width="191" height="190" alt="Фото пользователя">
             <div class="card-rate">
-                <div class="stars-rating big"><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span>&nbsp;</span></div>
+                <?php $userServices->renderStarRating($user->rating, 'big'); ?>
                 <span class="current-rate"><?= Html::encode($user->rating) ?></span>
             </div>
         </div>
@@ -43,8 +44,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <p class="bio-info"><span class="country-info">Россия</span>, <span class="town-info"><?= Html::encode($user->city->name) ?></span>, <span class="age-info"><?= $dateServices->countUserAge($user->birthday) ?></span></p>
         </div>
     </div>
-    <h4 class="head-regular">Отзывы заказчиков</h4>
     <?php if (!empty($user->workerReviews)) : ?>
+        <h4 class="head-regular">Отзывы заказчиков</h4>
         <?php foreach ($user->workerReviews as $userReview) : ?>
         <div class="response-card">
             <img class="customer-photo" src="/<?= $userReview->author->avatar ?>" width="120" height="127" alt="Фото заказчиков">
@@ -53,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <p class="task">Задание «<a href="<?=Url::toRoute(['tasks/view/','id' => $userReview->task->id]); ?>" class="link link--small"><?= Html::encode($userReview->task->title) ?></a>» выполнено</p>
             </div>
             <div class="feedback-wrapper">
-                <div class="stars-rating small"><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span>&nbsp;</span></div>
+                <?php $userServices->renderStarRating($userReview->mark, ); ?>
                 <p class="info-text"><span class="current-time"><?= $dateServices->elapsed_time($userReview->add_date) ?></p>
             </div>
         </div>
@@ -79,15 +80,21 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="right-card white">
         <h4 class="head-card">Контакты</h4>
         <ul class="enumeration-list">
+            <?php if ($user->phone) : ?>
             <li class="enumeration-item">
                 <a href="tel:<?= Html::encode($user->phone) ?>" class="link link--block link--phone"><?= Html::encode($user->phone) ?></a>
             </li>
+            <?php endif;?>
+            <?php if ($user->email) : ?>
             <li class="enumeration-item">
                 <a href="mailto:<?= Html::encode($user->email) ?>" class="link link--block link--email"><?= Html::encode($user->email) ?></a>
             </li>
+            <?php endif;?>
+            <?php if ($user->telegram) : ?>
             <li class="enumeration-item">
                 <a href="t.me/<?= Html::encode($user->telegram) ?>" class="link link--block link--tg"><?= Html::encode($user->telegram) ?></a>
             </li>
+            <?php endif;?>
         </ul>
     </div>
 </div>

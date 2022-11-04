@@ -76,7 +76,6 @@ class Users extends ActiveRecord implements IdentityInterface
             'name' => 'Ваше имя',
             'email' => 'Email',
             'password' => 'Пароль',
-            'password_retype' => 'Повтор пароля',
             'is_worker' => 'я собираюсь откликаться на заказы',
             'avatar' => 'Аватар',
             'birthday' => 'День рождения',
@@ -90,8 +89,6 @@ class Users extends ActiveRecord implements IdentityInterface
             'rating' => 'Рейтинг',
         ];
     }
-
-    public $password_retype;
 
     /**
      * Gets query for [[City]].
@@ -190,5 +187,15 @@ class Users extends ActiveRecord implements IdentityInterface
     public function validateAuthKey($authKey)
     {
         // TODO: Implement validateAuthKey() method.
+    }
+
+    const ROLE_AUTHOR = 0;
+    const ROLE_WORKER = 1;
+
+    static function checkIsWorker($user) {
+        return $user->is_worker === self::ROLE_WORKER;
+    }
+    static function checkIsClient($user) {
+        return $user->is_worker === self::ROLE_AUTHOR;
     }
 }

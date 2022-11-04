@@ -785,7 +785,9 @@ template {
     -webkit-box-flex: 1;
         -ms-flex-positive: 1;
             flex-grow: 1; }
-
+.response-card--rejected {
+  opacity: 0.5;
+}
 .customer-photo {
   border-bottom-left-radius: 15px;
   border-top-left-radius: 15px; }
