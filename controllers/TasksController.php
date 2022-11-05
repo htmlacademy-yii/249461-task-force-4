@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Cities;
 use app\models\forms\AddNewTask;
 use app\models\forms\AddResponseForm;
 use app\models\forms\AddReviewForm;
@@ -91,6 +92,7 @@ class TasksController extends SecuredController
     public function actionAdd()
     {
         $newTask = new AddNewTask();
+        $taskCreateServices = new TaskCreateService();
 
         if (Yii::$app->request->getIsPost()) {
             $newTask->load(Yii::$app->request->post());
@@ -110,11 +112,24 @@ class TasksController extends SecuredController
                 $task->author_id = Yii::$app->user->identity->id;
                 $task->price = $newTask->price;
                 $task->end_date = $newTask->end_date;
-                $task->address = $newTask->address;
+
+                if (empty($newTask->address) || empty($taskCreateServices->getGeocodeData($newTask->address))) {
+                    $task->is_remote = 1;
+                } else {
+                    $addressData = $taskCreateServices->getGeocodeData($newTask->address)[0];
+
+                    $city = Cities::find()->where(['name' => $addressData['city']])->one();
+
+                    if ($city) {
+                        $task->city_id = $city->id;
+                        $task->address = $addressData['address'];
+                        $task->lng = $addressData['lng'];
+                        $task->lat = $addressData['lat'];
+                    }
+                }
 
                 $task->save(false);
 
-                $taskCreateServices = new TaskCreateService();
                 /* Сохранение файлов таска */
                 $taskCreateServices->saveUploadFiles($newTask->taskFiles, $task->id);
 
