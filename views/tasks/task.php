@@ -9,6 +9,8 @@ use app\models\Users;
 use app\services\TaskViewServices;
 use app\services\UserServices;
 
+use phpnt\yandexMap\YandexMaps;
+
 $dateServices = new DateServices();
 $taskCreateService = new TaskCreateService();
 $taskViewServices = new TaskViewServices;
@@ -18,8 +20,10 @@ $current_user = Yii::$app->user->identity;
 $this->title = $task->title;
 $this->params['breadcrumbs'][] = $this->title;
 
-function countUserReviews($reviews, $dateServices) {
-    return count($reviews) . '&nbsp;' . $dateServices->get_noun_plural_form(count($reviews), 'отзыв', 'отзыва', 'отзывов');
+function countUserReviews($reviews, $dateServices)
+{
+    return count($reviews) . '&nbsp;' . $dateServices->get_noun_plural_form(count($reviews), 'отзыв', 'отзыва',
+            'отзывов');
 }
 
 ?>
@@ -31,37 +35,70 @@ function countUserReviews($reviews, $dateServices) {
     </div>
     <p class="task-description"><?= Html::encode($task->description) ?></p>
     <?php if ($task->status == Tasks::STATUS_NEW) : ?>
-        <?php if ((Users::checkIsWorker($current_user) && $task->worker_id == null) && $taskViewServices->checkUserResponse($task->id, $current_user->id)) : ?>
+        <?php if ((Users::checkIsWorker($current_user) && $task->worker_id == null) && $taskViewServices->checkUserResponse($task->id,
+                $current_user->id)) : ?>
             <a href="#" class="button button--blue action-btn" data-action="act_response">Откликнуться на задание</a>
-        <?php elseif(Users::checkIsClient($current_user) && $taskViewServices->checkTaskAuthor($task, $current_user)): ?>
-            <a href="<?= Url::to(['tasks/cancel/', 'id' => $task->id]); ?>" class="button button--yellow action-btn" data-action="act_cancel">Отменить задание</a>
+        <?php elseif (Users::checkIsClient($current_user) && $taskViewServices->checkTaskAuthor($task,
+                $current_user)): ?>
+            <a href="<?= Url::to(['tasks/cancel/', 'id' => $task->id]); ?>" class="button button--yellow action-btn"
+               data-action="act_cancel">Отменить задание</a>
         <?php endif; ?>
     <?php endif; ?>
     <?php if ($task->status == Tasks::STATUS_PROGRESS) : ?>
         <?php if (Users::checkIsWorker($current_user) && $taskViewServices->checkTaskWorker($task, $current_user)) : ?>
             <a href="#" class="button button--orange action-btn" data-action="refusal">Отказаться от задания</a>
-        <?php elseif(Users::checkIsClient($current_user) && $taskViewServices->checkTaskAuthor($task, $current_user)): ?>
+        <?php elseif (Users::checkIsClient($current_user) && $taskViewServices->checkTaskAuthor($task,
+                $current_user)): ?>
             <a href="#" class="button button--pink action-btn" data-action="completion">Завершить задание</a>
         <?php endif; ?>
     <?php endif; ?>
 
     <?php if (!empty($task->address)) : ?>
-    <div class="task-map">
-        <img class="map" src="/img/map.png" width="725" height="346" alt="<?= Html::encode($task->address) ?>">
-        <?php if (!empty($task->city->name)) : ?>
-            <p class="map-address town"><?= Html::encode($task->city->name) ?></p>
-        <?php endif; ?>
-        <p class="map-address"><?= Html::encode($task->address) ?></p>
-    </div>
+        <div class="task-map">
+            <?= YandexMaps::widget(
+                [
+                    'myPlacemarks' => [
+                        [
+                            'latitude' => $task->lat,
+                            'longitude' => $task->lng,
+                            'options' => [
+                                [
+                                    'hintContent' => $task->address,
+                                ]
+                            ]
+                        ],
+                    ],
+                    'mapOptions' => [
+                        'center' => [$task->lat, $task->lng],
+                        'zoom' => 17,
+                        'controls' => ['zoomControl', 'fullscreenControl'],
+                        /*'control' => [
+                            'zoomControl' => [
+                                'top' => 75,
+                                'left' => 5
+                            ],
+                        ],*/
+                    ],
+                    'disableScroll' => false,
+                    'windowWidth' => '725px',
+                    'windowHeight' => '346px',
+                ]
+            ); ?>
+            <?php if (!empty($task->city->name)) : ?>
+                <p class="map-address town"><?= Html::encode($task->city->name) ?></p>
+            <?php endif; ?>
+            <p class="map-address"><?= Html::encode($task->address) ?></p>
+        </div>
     <?php endif; ?>
     <h4 class="head-regular">Отклики на задание</h4>
     <?php if (!!$task->responses) : ?>
         <?php foreach ($task->responses as $response) : ?>
-            <div class="response-card <?= $response->rejected===1 ? 'response-card--rejected' : ''?>">
+            <div class="response-card <?= $response->rejected === 1 ? 'response-card--rejected' : '' ?>">
                 <img class="customer-photo" src="/<?= $response->user->avatar ?>" width="146" height="156"
                      alt="Фото заказчиков">
                 <div class="feedback-wrapper">
-                    <a href="<?=Url::toRoute(['users/view/','id' => $response->user->id]); ?>" class="link link--block link--big"><?= Html::encode($response->user->name) ?></a>
+                    <a href="<?= Url::toRoute(['users/view/', 'id' => $response->user->id]); ?>"
+                       class="link link--block link--big"><?= Html::encode($response->user->name) ?></a>
                     <div class="response-wrapper">
                         <?php $userServices->renderStarRating($response->user->rating); ?>
                         <p class="reviews"><?= countUserReviews($response->user->workerReviews, $dateServices) ?></p>
@@ -71,14 +108,24 @@ function countUserReviews($reviews, $dateServices) {
                     </p>
                 </div>
                 <div class="feedback-wrapper">
-                    <p class="info-text"><span class="current-time"><?= $dateServices->elapsed_time($response->add_date) ?></p>
+                    <p class="info-text"><span
+                                class="current-time"><?= $dateServices->elapsed_time($response->add_date) ?></p>
                     <p class="price price--small"><?= Html::encode($response->price) ?> ₽</p>
                 </div>
-                <?php if ($task->status == Tasks::STATUS_NEW && $taskViewServices->checkTaskAuthor($task, $current_user) && $response->rejected!==1):?>
-                <div class="button-popup">
-                    <a href="<?= Url::to(['tasks/start/', 'id' => $task->id, 'worker_id' => $response->user_id]); ?>" class="button button--blue button--small">Принять</a>
-                    <a href="<?= Url::to(['tasks/reject/', 'response_id' => $response->id, 'task_id'=>$response->task_id]); ?>" class="button button--orange button--small">Отказать</a>
-                </div>
+                <?php if ($task->status == Tasks::STATUS_NEW && $taskViewServices->checkTaskAuthor($task,
+                        $current_user) && $response->rejected !== 1): ?>
+                    <div class="button-popup">
+                        <a href="<?= Url::to([
+                            'tasks/start/',
+                            'id' => $task->id,
+                            'worker_id' => $response->user_id
+                        ]); ?>" class="button button--blue button--small">Принять</a>
+                        <a href="<?= Url::to([
+                            'tasks/reject/',
+                            'response_id' => $response->id,
+                            'task_id' => $response->task_id
+                        ]); ?>" class="button button--orange button--small">Отказать</a>
+                    </div>
                 <?php endif; ?>
             </div>
         <?php endforeach; ?>
@@ -108,14 +155,15 @@ function countUserReviews($reviews, $dateServices) {
 
             <ul class="enumeration-list">
                 <?php foreach ($task->taskFiles as $file) : ?>
-                    <?php if(file_exists($file->path)):?>
+                    <?php if (file_exists($file->path)): ?>
                         <li class="enumeration-item">
-                            <a href="<?=$file->path;?>" download="<?=$file->name;?>" class="link link--block link--clip"><?=$file->name;?></a>
-                            <p class="file-size"><?=$taskCreateService->showFileSize($file->path)?></p>
+                            <a href="<?= $file->path; ?>" download="<?= $file->name; ?>"
+                               class="link link--block link--clip"><?= $file->name; ?></a>
+                            <p class="file-size"><?= $taskCreateService->showFileSize($file->path) ?></p>
                         </li>
                     <?php else: ?>
                         <li class="enumeration-item">
-                            Файл <b><?=$file->name;?></b> не найден или удален с сервера
+                            Файл <b><?= $file->name; ?></b> не найден или удален с сервера
                         </li>
                     <?php endif; ?>
                 <?php endforeach; ?>
@@ -137,6 +185,6 @@ function countUserReviews($reviews, $dateServices) {
         </div>
     </div>
 </section>
-<?= $this->render('_add_response_form', ['task' =>$task, 'newResponse' => $newResponse]) ?>
-<?= $this->render('_add_review_form', ['task' =>$task, 'newReview' => $newReview]) ?>
+<?= $this->render('_add_response_form', ['task' => $task, 'newResponse' => $newResponse]) ?>
+<?= $this->render('_add_review_form', ['task' => $task, 'newReview' => $newReview]) ?>
 <div class="overlay"></div>

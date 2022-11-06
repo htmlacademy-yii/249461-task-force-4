@@ -3,8 +3,10 @@
 namespace app\services;
 
 use app\models\Tasks;
+use GuzzleHttp\Client;
 use Yii;
 use app\models\TaskFiles;
+use yii\helpers\ArrayHelper;
 
 class TaskCreateService
 {
@@ -82,5 +84,71 @@ class TaskCreateService
     {
         $size = filesize(Yii::getAlias('@web'). $fileName);
         return Yii::$app->formatter->asShortSize($size);
+    }
+
+
+    /**
+     * @param string $geocode Строка с адресом
+     * @return array Пустой массив илиМассив с данными: город, адрес, координаты, если город совпадает с городом автора
+     * @throws Exception
+     */
+    public function getGeocodeData(string $geocode): array
+    {
+        $apiKey = Yii::$app->params['geocoderApiKey'];
+        $apiUri = 'https://geocode-maps.yandex.ru/1.x';
+        $userCity = Yii::$app->user->identity->city->name;
+        $result = [];
+        $client = new Client();
+
+        try {
+            $response = $client->request('GET', $apiUri, [
+                'query' => [
+                    'geocode' => $geocode,
+                    'apikey' => $apiKey,
+                    'format' => 'json'
+                ],
+            ]);
+
+            $content = $response->getBody()->getContents();
+            $responseData = json_decode($content, true);
+
+            $geoObjects = ArrayHelper::getValue($responseData, 'response.GeoObjectCollection.featureMember');
+
+            foreach ($geoObjects as $geoObject) {
+                $result[] = $this->getLocationData($geoObject);
+            }
+        } catch (GuzzleException $e) {
+            $result = [];
+        }
+
+        return array_values(array_filter($result, fn($item) => $item['city'] === $userCity));
+    }
+
+    /**
+     * @param array $geoObject объект ответа от геокодера
+     * @return array Массив с данными, город, адрес, координаты
+     * @throws Exception
+     */
+    public function getLocationData(array $geoObject): array
+    {
+        $geocoderMetaData = ArrayHelper::getValue($geoObject, 'GeoObject.metaDataProperty.GeocoderMetaData');
+        $addressComponents = ArrayHelper::map(
+            ArrayHelper::getValue($geocoderMetaData, 'Address.Components'),
+            'kind',
+            'name'
+        );
+
+        $location = ArrayHelper::getValue($geocoderMetaData, 'text');
+        $city = ArrayHelper::getValue($addressComponents, 'locality');
+        $address = ArrayHelper::getValue($geoObject, 'GeoObject.name');
+        [$lng, $lat] = explode(' ', ArrayHelper::getValue($geoObject, 'GeoObject.Point.pos'));
+
+        return [
+            'location' => $location,
+            'city' => $city,
+            'address' => $address,
+            'lat' => $lat,
+            'lng' => $lng,
+        ];
     }
 }
